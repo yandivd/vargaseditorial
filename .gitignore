@@ -1,0 +1,6 @@
+store/__pycache__
+store/migrations
+bookstore/__pycache__
+crm/migrations
+crm/__pycache__
+venv

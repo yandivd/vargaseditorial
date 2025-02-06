@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <section id="billboard" class="position-relative d-flex align-items-center py-5 bg-light-gray"
+      style="background-image: url('{% static 'store/images/banner-image-bg-1.jpg' %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 800px;">
+      <div class="position-absolute end-0 pe-0 pe-xxl-5 me-0 me-xxl-5 swiper-next main-slider-button-next">
+        <svg class="chevron-forward-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+          <use xlink:href="#alt-arrow-right-outline"></use>
+        </svg>
+      </div>
+      <div class="position-absolute start-0 ps-0 ps-xxl-5 ms-0 ms-xxl-5 swiper-prev main-slider-button-prev">
+        <svg class="chevron-back-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+          <use xlink:href="#alt-arrow-left-outline"></use>
+        </svg>
+      </div>
+      <div class="swiper main-swiper">
+        <div class="swiper-wrapper d-flex align-items-center">
+          <div class="swiper-slide">
+            <div class="container">
+              <div class="row d-flex flex-column-reverse flex-md-row align-items-center">
+                <div class="col-md-5 offset-md-1 mt-5 mt-md-0 text-center text-md-start">
+                  <div class="banner-content">
+                    <h2>La Colección de Libros Harry Potter</h2>
+                    <p>Mejor Oferta. Ahorre 30%. Consíguelo ahora!</p>
+                    <a href="index.html" class="btn mt-3">Comprar Colección</a>
+                  </div>
+                </div>
+                <div class="col-md-6 text-center">
+                  <div class="image-holder">
+                    <img src="{% static 'store/images/banner-image2.png' %}" class="img-fluid" alt="banner" style="width: 50%; height: 50%;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="best-selling-items" class="position-relative padding-large ">
+      <div class="container">
+        <div class="section-title d-md-flex justify-content-between align-items-center mb-4">
+          <h3 class="d-flex align-items-center">Libros Más Vendidos</h3>
+          <a href="index.html" class="btn">Ver Todos</a>
+        </div>
+        <div class="position-absolute top-50 end-0 pe-0 pe-xxl-5 me-0 me-xxl-5 swiper-next product-slider-button-next">
+          <svg class="chevron-forward-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+            <use xlink:href="#alt-arrow-right-outline"></use>
+          </svg>
+        </div>
+        <div class="position-absolute top-50 start-0 ps-0 ps-xxl-5 ms-0 ms-xxl-5 swiper-prev product-slider-button-prev">
+          <svg class="chevron-back-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+            <use xlink:href="#alt-arrow-left-outline"></use>
+          </svg>
+        </div>
+        <div class="swiper product-swiper">
+            <div class="swiper-wrapper">
+                {% for book in best_selling_books %}
+                    <div class="swiper-slide">  <!-- Cada libro debe estar en su propia slide -->
+                        <div class="card position-relative p-4 border rounded-3">
+                            {% if book.discount %}
+                                <div class="position-absolute">
+                                    <p class="bg-primary py-1 px-3 fs-6 text-white rounded-2">{{ book.discount }}% off</p>
+                                </div>
+                            {% endif %}
+                            <img src="{{ book.img.url }}" class="img-fluid shadow-sm" alt="{{ book.title }}">
+                            <h6 class="mt-4 mb-0 fw-bold"><a href="#">{{ book.title }}</a></h6>
+                            <div class="review-content d-flex">
+                                <p class="my-2 me-2 fs-6 text-black-50">{{ book.author }}</p>
+                                <div class="rating text-warning d-flex align-items-center">
+                                    {% for star in book.rating %}
+                                        <svg class="star star-fill">
+                                            <use xlink:href="#star-fill"></use>
+                                        </svg>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if book.discount %}
+                            <span class="price text-primary fw-bold mb-2 fs-5"><s class="text-black-50">${{book.price}}</s>
+                                ${{book.discounted_price}}</span>
+                        {% else %}
+                            <span class="price text-primary fw-bold mb-2 fs-5">${{book.price}}</span>
+                        {% endif %}
+                        <div class="card-concern position-absolute start-0 end-0 d-flex gap-1">
+                          <a href="{% url 'book_detail' book.id %}" class="btn btn-dark btn-sm">
+                              <span>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                  </svg>
+                              </span>
+                          </a>
+                          <a href="https://wa.me/5354545068" class="btn btn-dark btn-sm">
+                              <span>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                                      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                  </svg>
+                              </span>
+                          </a>
+                      </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <section id="limited-offer" class="padding-large"
+      style="background-image: url('{% static 'store/images/banner-image-bg-1.jpg' %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 800px;">
+      <div class="container">
+        <div class="row d-flex align-items-center">
+          <div class="col-md-6 text-center">
+            <div class="image-holder">
+              <img src="{% static 'store/images/banner-image3.png' %}" class="img-fluid" alt="banner">
+            </div>
+          </div>
+          {% comment %} <div class="col-md-5 offset-md-1 mt-5 mt-md-0 text-center text-md-start">
+            <h2>30% Discount on all items. Hurry Up !!!</h2>
+            <div id="countdown-clock" class="text-dark d-flex align-items-center my-3">
+              <div class="time d-grid pe-3">
+                <span class="days fs-1 fw-normal"></span>
+                <small>Days</small>
+              </div>
+              <span class="fs-1 text-primary">:</span>
+              <div class="time d-grid pe-3 ps-3">
+                <span class="hours fs-1 fw-normal"></span>
+                <small>Hrs</small>
+              </div>
+              <span class="fs-1 text-primary">:</span>
+              <div class="time d-grid pe-3 ps-3">
+                <span class="minutes fs-1 fw-normal"></span>
+                <small>Min</small>
+              </div>
+              <span class="fs-1 text-primary">:</span>
+              <div class="time d-grid ps-3">
+                <span class="seconds fs-1 fw-normal"></span>
+                <small>Sec</small>
+              </div>
+            </div>
+            <a href="index.html" class="btn mt-3">Shop Collection</a>
+          </div> {% endcomment %}
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section id="items-listing" class="padding-large">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-lg-0 col-lg-3">
+                <div class="best-reviewed border rounded-3 p-4">
+                  <div class="section-title overflow-hidden mb-5 mt-2">
+                    <h3 class="d-flex flex-column mb-0">Mejor Valorados</h3>
+                  </div>
+                  {% for i in best_rated%}
+                  <div class="items-lists">
+                    <div class="item d-flex">
+                      <img src="{{i.img.url}}" class="img-fluid shadow-sm" alt="product item">
+                      <div class="item-content ms-3">
+                        <h6 class="mb-0 fw-bold"><a href="{% url 'book_detail' i.id %}">{{i.title}}</a></h6>
+                        <div class="review-content d-flex">
+                          <p class="my-2 me-2 fs-6 text-black-50">{{i.author}}</p>
+                          <div class="rating text-warning d-flex align-items-center">
+                          </div>
+                        </div>
+                        {% if i.discount %}
+                            <span class="price text-primary fw-bold mb-2 fs-5"><s class="text-black-50">${{i.price}}</s>
+                                ${{i.discounted_price}}</span>
+                        {% else %}
+                            <span class="price text-primary fw-bold mb-2 fs-5">${{i.price}}</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-md-6 mb-4 mb-lg-0 col-lg-3">
+                <div class="best-reviewed border rounded-3 p-4">
+                  <div class="section-title overflow-hidden mb-5 mt-2">
+                    <h3 class="d-flex flex-column mb-0">Recientes</h3>
+                  </div>
+                  {% for i in added_latest%}
+                  <div class="items-lists">
+                    <div class="item d-flex">
+                      <img src="{{i.img.url}}" class="img-fluid shadow-sm" alt="product item">
+                      <div class="item-content ms-3">
+                        <h6 class="mb-0 fw-bold"><a href="{% url 'book_detail' i.id %}">{{i.title}}</a></h6>
+                        <div class="review-content d-flex">
+                          <p class="my-2 me-2 fs-6 text-black-50">{{i.author}}</p>
+                          <div class="rating text-warning d-flex align-items-center">
+                          </div>
+                        </div>
+                        {% if i.discount %}
+                            <span class="price text-primary fw-bold mb-2 fs-5"><s class="text-black-50">${{i.price}}</s>
+                                ${{i.discounted_price}}</span>
+                            {% else %}
+                            <span class="price text-primary fw-bold mb-2 fs-5">${{i.price}}</span>
+                            {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  {% endfor %}
+                </div>
+              </div>
+          <div class="col-md-6 mb-4 mb-lg-0 col-lg-3">
+            <div class="best-reviewed border rounded-3 p-4">
+              <div class="section-title overflow-hidden mb-5 mt-2">
+                <h3 class="d-flex flex-column mb-0">Recomendados</h3>
+              </div>
+              {% for i in recomendated_books%}
+              <div class="items-lists">
+                <div class="item d-flex">
+                  <img src="{{i.img.url}}" class="img-fluid shadow-sm" alt="product item">
+                  <div class="item-content ms-3">
+                    <h6 class="mb-0 fw-bold"><a href="{% url 'book_detail' i.id %}">{{i.title}}</a></h6>
+                    <div class="review-content d-flex">
+                      <p class="my-2 me-2 fs-6 text-black-50">{{i.author}}</p>
+                      <div class="rating text-warning d-flex align-items-center">
+                      </div>
+                    </div>
+                    {% if i.discount %}
+                        <span class="price text-primary fw-bold mb-2 fs-5"><s class="text-black-50">${{i.price}}</s>
+                            ${{i.discounted_price}}</span>
+                        {% else %}
+                        <span class="price text-primary fw-bold mb-2 fs-5">${{i.price}}</span>
+                        {% endif %}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-md-6 mb-4 mb-lg-0 col-lg-3">
+            <div class="best-reviewed border rounded-3 p-4">
+              <div class="section-title overflow-hidden mb-5 mt-2">
+                <h3 class="d-flex flex-column mb-0">Descuentos</h3>
+              </div>
+              {% for i in discount_books%}
+              <div class="items-lists">
+                <div class="item d-flex">
+                  <img src="{{i.img.url}}" class="img-fluid shadow-sm" alt="product item">
+                  <div class="item-content ms-3">
+                    <h6 class="mb-0 fw-bold"><a href="{% url 'book_detail' i.id %}">{{i.title}}</a></h6>
+                    <div class="review-content d-flex">
+                      <p class="my-2 me-2 fs-6 text-black-50">{{i.author}}</p>
+                      <div class="rating text-warning d-flex align-items-center">
+                      </div>
+                    </div>
+                    {% if i.discount %}
+                        <span class="price text-primary fw-bold mb-2 fs-5"><s class="text-black-50">${{i.price}}</s>
+                            ${{i.discounted_price}}</span>
+                        {% else %}
+                        <span class="price text-primary fw-bold mb-2 fs-5">${{i.price}}</span>
+                        {% endif %}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="customers-reviews" class="position-relative padding-large"
+      style="background-image: url('{% static 'store/images/banner-image-bg.jpg' %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 600px;">
+      <div class="container offset-md-3 col-md-6 ">
+        <div class="position-absolute top-50 end-0 pe-0 pe-xxl-5 me-0 me-xxl-5 swiper-next testimonial-button-next">
+          <svg class="chevron-forward-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+            <use xlink:href="#alt-arrow-right-outline"></use>
+          </svg>
+        </div>
+        <div class="position-absolute top-50 start-0 ps-0 ps-xxl-5 ms-0 ms-xxl-5 swiper-prev testimonial-button-prev">
+          <svg class="chevron-back-circle d-flex justify-content-center align-items-center p-2" width="80" height="80">
+            <use xlink:href="#alt-arrow-left-outline"></use>
+          </svg>
+        </div>
+        <div class="swiper testimonial-swiper ">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="card position-relative text-left p-5 border rounded-3">
+                <blockquote>"Los libros son puertas abiertas a infinitas aventuras; cada página que pasas te invita a explorar nuevos mundos, a conocer personajes inolvidables y a vivir experiencias que transforman tu vida. Así que toma un libro y deja que tu imaginación te lleve a lugares que nunca has imaginado."</blockquote>
+                <div class="rating text-warning d-flex align-items-center">
+                  <svg class="star star-fill">
+                    <use xlink:href="#star-fill"></use>
+                  </svg>
+                  <svg class="star star-fill">
+                    <use xlink:href="#star-fill"></use>
+                  </svg>
+                  <svg class="star star-fill">
+                    <use xlink:href="#star-fill"></use>
+                  </svg>
+                  <svg class="star star-fill">
+                    <use xlink:href="#star-fill"></use>
+                  </svg>
+                  <svg class="star star-fill">
+                    <use xlink:href="#star-fill"></use>
+                  </svg>
+                </div>
+                <h5 class="mt-1 fw-normal">Ernesto Loriga</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
