@@ -2,8 +2,10 @@ import datetime
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from .models import Pedido, Estado, Book
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def index(request):
     balance_actual = 0
     pendiente = 0
