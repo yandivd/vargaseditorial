@@ -61,8 +61,10 @@ def index(request):
 
         ### Hacer validaciones para que cuando cambie a entregado se sume el pago pendiente ###
         ### al original y demas cambios que dependen del cambio de estado #####################
-        pedido.pago_pend=0
-        pedido.totalmente_pagado=True
+        if new_estado == Estado.objects.get(id=8):
+            pedido.pago_pend=0
+            pedido.totalmente_pagado=True
+            
         pedido.save()
 
         return redirect('dashboard')
