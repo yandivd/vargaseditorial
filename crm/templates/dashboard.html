@@ -292,7 +292,11 @@
                     <tbody>
                       {% for i in pedidos %}
                     <tr>
-                      <td>{% if i.id|length == 1 %}00{{i.id}}{% elif i.id|length == 2 %}0{{i.id}}{% else %}{{i.id}}{% endif %}</td>
+                      <td>
+                        {% if i.id < 10 %}0{% endif %}
+                        {% if i.id < 100 %}0{% endif %}
+                        {{ i.id }}
+                      </td>
                       <td>{{i.name}}</td>
                       <td>{{i.telf}}</td>
                       <td>{{i.libro}}</td>
@@ -540,10 +544,10 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
                 
                 if (precioLibro) {
                     var pagoAnticipado = parseInt(precioLibro / 2);
-                    $('#pago-anticipado').val(pagoAnticipado.toFixed(2));
+                    $('#pago-anticipado').val(pagoAnticipado);
                     
                     // Puedes calcular el pago pendiente restándole al total la parte anticipada.
-                    $('#pago-pend').val((precioLibro - pagoAnticipado).toFixed(2));
+                    $('#pago-pend').val((precioLibro - pagoAnticipado));
                 } else {
                     console.error("No se pudo obtener el precio del libro.");
                 }

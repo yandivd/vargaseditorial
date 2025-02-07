@@ -5,6 +5,16 @@ from .models import Pedido, Estado, Book
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+def format_id(id):
+    if len(str(id)) == 1:
+        return f"00{id}"
+    elif len(str(id)) == 2:
+        return f"0{id}"
+    else:
+        return str(id)
+
+
 @login_required
 def index(request):
     balance_actual = 0
@@ -37,7 +47,7 @@ def index(request):
         'pedidos': Pedido.objects.exclude(status = Estado.objects.get(name='Entregado')),
         'status_colors': STATUS_COLORS,
         'status': Estado.objects.all(),
-        'libros': Book.objects.all()
+        'libros': Book.objects.all(),
     }
 
     if request.method == 'POST':
