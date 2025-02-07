@@ -292,7 +292,7 @@
                     <tbody>
                       {% for i in pedidos %}
                     <tr>
-                      <td>{{i.id}}</td>
+                      <td>{% if i.id|length == 1 %}00{{i.id}}{% elif i.id|length == 2 %}0{{i.id}}{% else %}{{i.id}}{% endif %}</td>
                       <td>{{i.name}}</td>
                       <td>{{i.telf}}</td>
                       <td>{{i.libro}}</td>
