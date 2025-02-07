@@ -539,7 +539,7 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
                 var precioLibro = data.precio; // Ajusta según sea necesario
                 
                 if (precioLibro) {
-                    var pagoAnticipado = precioLibro / 2;
+                    var pagoAnticipado = parseInt(precioLibro / 2);
                     $('#pago-anticipado').val(pagoAnticipado.toFixed(2));
                     
                     // Puedes calcular el pago pendiente restándole al total la parte anticipada.
