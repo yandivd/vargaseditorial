@@ -899,7 +899,7 @@ th{
   border-color: #af9aaa;
 }
 .search-form button {
-  position: absolute;
+  position: relative;
   top: 6px;
   right: 9px;
   background: transparent;
