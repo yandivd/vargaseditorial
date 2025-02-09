@@ -48,6 +48,9 @@ def index(request):
         'status_colors': STATUS_COLORS,
         'status': Estado.objects.all(),
         'libros': Book.objects.all(),
+        'nuevos_pedidos': Pedido.objects.filter(status=Estado.objects.get(id=1)).count(),
+        'encuadernando': Pedido.objects.filter(status=Estado.objects.get(id=4)).count()+Pedido.objects.filter(status=Estado.objects.get(id=5)).count(),
+        'listos_entregar': Pedido.objects.filter(status=Estado.objects.get(id=7)).count()
     }
 
     if request.method == 'POST':

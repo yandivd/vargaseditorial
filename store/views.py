@@ -84,7 +84,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return JsonResponse({'success': True, 'redirect_url': '/'})  # Cambia la URL de redirección según sea necesario
+            return JsonResponse({'success': True, 'redirect_url': '/crm/'})  # Cambia la URL de redirección según sea necesario
         else:
             return JsonResponse({'success': False, 'message': 'Credenciales inválidas'}, status=400)
 

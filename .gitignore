@@ -4,3 +4,4 @@ bookstore/__pycache__
 crm/migrations
 crm/__pycache__
 venv
+db.sqlite3

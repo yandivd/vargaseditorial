@@ -251,6 +251,48 @@
           </div>
           <!-- /.col -->
         </div>
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-4 col-6">
+            <!-- small card -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{nuevos_pedidos}}</h3>
+
+                <p>Nuevos Pedidos</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-cart-arrow-down"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-6">
+            <!-- small card -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{encuadernando}}</h3>
+
+                <p>Encuadernando</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-book"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-6">
+            <!-- small card -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{listos_entregar}}</h3>
+
+                <p>Listos para Entregar</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-truck"></i>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- /.row -->
 
 
@@ -314,7 +356,7 @@
                           data-target="#exampleModal"
                           data-id="{{ i.id }}"
                           onclick="cargarIdEnModal(this)">
-                          <i class="fa fa-print"></i>
+                          <i class="fa fa-cogs"></i>
                         </button>
                       </td>
                     </tr>
