@@ -5,3 +5,4 @@ crm/migrations
 crm/__pycache__
 venv
 db.sqlite3
+media
