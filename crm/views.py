@@ -48,6 +48,9 @@ def index(request):
         'status_colors': STATUS_COLORS,
         'status': Estado.objects.all(),
         'libros': Book.objects.all(),
+        'nuevos_pedidos': Pedido.objects.filter(status=Estado.objects.get(id=1)).count(),
+        'encuadernando': Pedido.objects.filter(status=Estado.objects.get(id=4)).count()+Pedido.objects.filter(status=Estado.objects.get(id=5)).count(),
+        'listos_entregar': Pedido.objects.filter(status=Estado.objects.get(id=7)).count()
     }
 
     if request.method == 'POST':
@@ -108,3 +111,19 @@ def api_create_pedido(request):
         return JsonResponse({
             'status': 'OK'
         })
+    
+def ver_comprobante(request, id):
+    
+    try:
+        # Asumiendo que tienes una vista con acceso al id o pk
+        # Cambia esto según tus necesidades.
+        
+        # Obtén el objeto Pedido usando su ID o PK.
+        # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
+        comprobante = Pedido.objects.get(id=id)
+        print(comprobante)
+        return render(request, 'invoice.html', {'pedido': comprobante})
+    
+    except Exception as e:
+        print(f"Error al obtener el comprobante {e}")
+        return HttpResponse("Error al cargar datos.")
