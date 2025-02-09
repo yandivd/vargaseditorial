@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprobante de Venta</title>
+  <style>
+    * {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+    .comprobante {
+      width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .header,
+    .footer {
+      text-align: center;
+    }
+    .titulo {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .info {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .info-item {
+      margin-bottom: 8px;
+    }
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+    hr {
+      border: none;
+      border-top: 1px dashed #aaa;
+      margin: 15px 0;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+      color: #007bff;
+    }
+    .footer p {
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="comprobante">
+    <div class="header">
+        <img src="{% static 'img/logo.png' %}" style="width: 180px; height: 80px;" alt="">
+      <div class="titulo">Vargas Editorial</div>
+      <p>Tel: 54545068</p>
+      <p>Fecha: {{ pedido.fecha_orden }}</p>
+      <hr>
+    </div>
+
+    <div class="info">
+      <div class="info-item">
+        <span class="label">ID del Pedido:</span> {% if pedido.id < 10%}00{{ pedido.id }}{% elif pedido.id < 100%}0{{ pedido.id }}{% else %}{{ pedido.id }}{%endif%}
+      </div>
+        <div class="info-item">
+          <span class="label">Cliente:</span> {{ pedido.name }}
+        </div>
+      <div class="info-item">
+        <span class="label">Teléfono:</span> {{ pedido.telf }}
+      </div>
+      <div class="info-item">
+        <span class="label">Libro:</span> {{ pedido.libro }}
+      </div>
+      <div class="info-item">
+        <span class="label">Estado del Pedido:</span> {{ pedido.status }}
+      </div>
+      <div class="info-item">
+        <span class="label">Fecha de Recogida:</span> {{ pedido.fecha_entrega }}
+      </div>
+      <div class="info-item">
+        <span class="label">Lugar de Recogida:</span> {{ pedido.ubicacion }}
+      </div>
+      <hr>
+      <div class="info-item">
+        <span class="label">Pago Anticipado:</span> ${{ pedido.pago_anticipado }}
+      </div>
+      <div class="info-item">
+        <span class="label">Pago Pendiente:</span> ${{ pedido.pago_pend }}
+      </div>
+      <div class="info-item">
+        <span class="label">Totalmente Pago:</span> {% if pedido.totalmente_pagado %}Sí{% else %}No{% endif %}
+      </div>
+    </div>
+    
+    <div class="total"><div>
+        <img src="{% static 'img/qr.jpeg' %}" style="width: 120px; height: 100px;" alt="">
+    </div>Gracias por su compra</div>
+
+    <div class="footer">
+      <p>https://vargaseditorial.pythonanywhere.com/</p>
+      <p>¡Vuelva pronto!</p>
+    </div>
+  </div>
+</body>
+</html>
