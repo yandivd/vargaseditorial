@@ -67,7 +67,6 @@ def index(request):
         if new_estado == Estado.objects.get(id=8):
             pedido.pago_pend=0
             pedido.totalmente_pagado=True
-            pedido.libro.sales_amount=pedido.libro.sales_amount+1
             
         pedido.save()
 
@@ -104,6 +103,8 @@ def api_create_pedido(request):
         else:
             totalmente_pagado = False
 
+        libro.sales_amount=libro.sales_amount+1
+        libro.save()
         pedido= Pedido.objects.create(libro=libro, status=status, name=cliente, 
                                       telf=telf, fecha_orden=fecha_orden, fecha_entrega=fecha_entrega, 
                                       ubicacion=ubicacion, portada=portada, pago_anticipado=pago_anticipado,

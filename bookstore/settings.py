@@ -129,3 +129,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/crm/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Or another backend
+EMAIL_HOST = 'smtp.gmail.com'  # Your SMTP server
+EMAIL_PORT = 587  # Or the appropriate port for your server
+EMAIL_USE_TLS = True  # Or EMAIL_USE_SSL if required
+EMAIL_HOST_USER = 'yandivd@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'mynz loud topz cpcm'  # Your email password
+DEFAULT_FROM_EMAIL = 'yandivd@gmail.com'  # The default "From" address
+
+
