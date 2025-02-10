@@ -132,6 +132,7 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.templatetags.static import static
 
 def generate_pdf(request, id):
     # 1. Renderiza el template HTML.
@@ -149,6 +150,8 @@ def generate_pdf(request, id):
     context = {
         'titulo': 'Mi Documento PDF',
         'contenido': 'Este es el contenido generado desde el template.',
+        'logo_url': static('img/logo.png'),  # Ruta al logo (LOCAL)
+        'qr_code_url': static('img/qr.jpeg'),  # Ruta al código QR
         'pedido': comprobante
         # ... otros datos que necesitas pasar a tu template
     }

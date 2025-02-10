@@ -71,7 +71,7 @@
 <body>
   <div class="comprobante">
     <div class="header">
-        <img src="https://vargaseditorial.pythonanywhere.com/static/img/logo.png" style="width: 180px; height: 80px;" alt="">
+      <img src="{{ logo_url }}" style="width: 180px; height: 80px;" alt="Logo"/>
       <div class="titulo">Vargas Editorial</div>
       <p>Tel: 54545068</p>
       <p>Fecha: {{ pedido.fecha_orden }}</p>
@@ -113,7 +113,7 @@
     </div>
     
     <div class="total"><div>
-        <img src="{% static 'img/qr.jpeg' %}" style="width: 120px; height: 100px;" alt="">
+      <img src="{{ qr_code_url }}" style="width: 120px; height: 100px;" alt="Código QR"/>
     </div>Gracias por su compra</div>
 
     <div class="footer">
