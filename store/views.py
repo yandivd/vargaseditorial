@@ -50,7 +50,7 @@ def tienda(request):
     })
 
 def api_books(request):
-    books = Book.objects.filter(existencia = True)
+    books = Book.objects.filter(existencia = True).order_by('author')
     book_list = []
 
     for book in books:
