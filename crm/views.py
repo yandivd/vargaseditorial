@@ -146,6 +146,7 @@ def generate_pdf(request, id):
         comprobante = Pedido.objects.get(id=id)
     except Exception as e:
         print(e)
+        
 
     template = get_template('invoice.html') # Reemplaza 'mi_template.html' con el nombre de tu template.
     context = {
