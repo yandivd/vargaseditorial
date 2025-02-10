@@ -67,6 +67,7 @@ def index(request):
         if new_estado == Estado.objects.get(id=8):
             pedido.pago_pend=0
             pedido.totalmente_pagado=True
+            pedido.libro.sales_amount=pedido.libro.sales_amount+1
             
         pedido.save()
 
