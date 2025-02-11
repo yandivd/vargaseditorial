@@ -336,18 +336,29 @@ async function obtenerLibros() {
 }
 
 async function buscarLibros() {
-    if (libros.length === 0) {
-        await obtenerLibros(); // Cargar los libros solo si no se han cargado
-    }
+  if (libros.length === 0) {
+      await obtenerLibros(); // Cargar los libros solo si no se han cargado
+  }
 
-    const query = document.getElementById('search-form').value.toLowerCase();
+  const query = document.getElementById('search-form').value.trim().toLowerCase();
 
-    const resultados = libros.filter(libro => 
-        libro.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase())
-    );
+  // Solo buscar si hay al menos 3 caracteres
+  if (query.length >= 1) {
+      const resultados = libros.filter(libro => 
+          libro.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase())
+      );
 
-    mostrarResultados(resultados);
+      // Mostrar solo los primeros 5 resultados
+      const resultadosLimitados = resultados.slice(0, 4);
+
+      mostrarResultados(resultadosLimitados);
+  } else {
+      // Puedes mostrar un mensaje o limpiar los resultados si es necesario
+      console.log("Por favor, ingresa al menos 3 caracteres para buscar.");
+      // Opcionalmente: mostrarResultados([]); para limpiar la lista de resultados.
+  }
 }
+
 
 function mostrarResultados(resultados) {
     const booksContainer = document.getElementById('resultados');
