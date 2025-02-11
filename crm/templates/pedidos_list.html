@@ -23,7 +23,6 @@
   <link rel="stylesheet" href="{% static 'crm/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'crm/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'crm/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
 </head>
 <body class="hold-transition layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -195,110 +194,8 @@
     <section class="content">
       <div class="container-fluid">
         <!-- Info boxes -->
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fa fa-credit-card" aria-hidden="true"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Total de Ingresos</span>
-                <span class="info-box-number">
-                    $ {{balance_actual}}
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Pendiente</span>
-                <span class="info-box-number">
-                    $ {{pendiente}}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-
-          <!-- fix for small devices only -->
-          <div class="clearfix hidden-md-up"></div>
-
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Ventas</span>
-                <span class="info-box-number">{{ventas}}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-trophy" aria-hidden="true"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Total de Pedidos</span>
-                <span class="info-box-number">{{total_pedidos}}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-        </div>
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-4 col-6">
-            <!-- small card -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>{{nuevos_pedidos}}</h3>
-
-                <p>Nuevos Pedidos</p>
-              </div>
-              <div class="icon">
-                <i class="fas fa-cart-arrow-down"></i>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-6">
-            <!-- small card -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>{{encuadernando}}</h3>
-
-                <p>Encuadernando</p>
-              </div>
-              <div class="icon">
-                <i class="fas fa-book"></i>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-6">
-            <!-- small card -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>{{listos_entregar}}</h3>
-
-                <p>Listos para Entregar</p>
-              </div>
-              <div class="icon">
-                <i class="fas fa-truck"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
+        
+        
 
 
         <!-- Main row -->
@@ -321,7 +218,7 @@
               <!-- /.card-header -->
               <div class="card-body p-0">
                 <div class="table-responsive">
-                  <table class="m-0 table table-striped table-bordered table-hover" id="tablaPedidos">
+                  <table class="table m-0" id="tablaPedidos">
                     <thead>
                     <tr>
                       <th>Order ID</th>
@@ -363,14 +260,6 @@
                         <a href="#" onclick="abrirVentana('{% url 'ver_comprobantes' i.id %}')" class="btn btn-warning">
                           <i class="fa fa-download"></i>
                         </a>
-                        <button 
-                          class="btn btn-primary" 
-                          data-toggle="modal" 
-                          data-target="#exampleModal"
-                          data-id="{{ i.id }}"
-                          onclick="cargarIdEnModal(this)">
-                          <i class="fa fa-cogs"></i>
-                        </button>
                       </td>
                     </tr>
                     {% endfor %}
@@ -381,14 +270,6 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-                <button 
-                          class="btn btn-primary" 
-                          data-toggle="modal" 
-                          data-target="#modalCreate">
-                          <i class="fa fa-plus mr-1" aria-hidden="true"></i>
-                          Crear Pedido 
-                        </button>
-                <a href="{% url 'pedidos_list' %}" class="btn btn-sm btn-secondary float-right">View All Orders</a>
               </div>
               <!-- /.card-footer -->
             </div>
@@ -425,139 +306,6 @@
   </footer>
 </div>
 <!-- Modal de cambio de estado -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Editar Pedido</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="elemento_id" id="idElemento">
-          <select class="form-control select" name="status" id="">
-            {% for i in status %}
-              <option value="{{i.id}}">{{i}}</option>
-            {% endfor %}
-          </select>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
-
-      </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de crear pedido -->
-<div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crear nuevo pedido</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="card-body">
-          <form id="createform">
-            {% csrf_token %}
-          <div class="row">
-            <!-- Columna Izquierda -->
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Libro</label>
-                <select class="form-control select" name="libro" required id="libro-select">
-                  <option value="">Seleccione un libro</option>
-                  {% for libro in libros %}
-                  <option value="{{ libro.id }}">{{ libro.title }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-  
-              <div class="form-group">
-                <label>Cliente</label>
-                <input type="text" class="form-control" name="name" required placeholder="Nombre completo del cliente">
-              </div>
-  
-              <div class="form-group">
-                <label>Teléfono</label>
-                <input type="text" class="form-control" name="telf" required placeholder="Número de teléfono" pattern="[0-9]{8}">
-              </div>
-            </div>
-  
-            <!-- Columna Derecha -->
-            <div class="col-md-6">
-             
-  
-              <div class="form-group">
-                <label>Fecha de Orden</label>
-                <input type="date" class="form-control datepicker" name="fecha_orden" value="{{ today|date:'Y-m-d' }}" required>
-              </div>
-  
-              <div class="form-group">
-                <label>Lugar de Recogida</label>
-                <input type="text" class="form-control" name="ubicacion" placeholder="Dirección de recogida" required>
-              </div>
-  
-              <div class="form-group">
-                <label>Pagos</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">$</span>
-                  </div>
-                  <input type="number" 
-                    class="form-control" 
-                    name="pago_anticipado" 
-                    placeholder="Pago anticipado" 
-                    min="0" 
-                    step="1"
-                    required 
-                    id="pago-anticipado">
-                </div>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">$</span>
-                  </div>
-                  <input type="number" class="form-control" name="pago_pend" 
-                         placeholder="Pago pendiente" min="0" step="1" required id="pago-pend">
-                </div>
-              </div>
-  
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="portada" id="portada">
-                <label class="form-check-label" for="portada">Portada especial</label>
-              </div>
-  
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="totalmente_pagado" id="total_pago">
-                <label class="form-check-label" for="total_pago">Totalmente pagado</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button 
-            type="button" 
-            class="btn btn-primary" 
-            onclick="enviarDatos()"
-        >Save changes</button>
-
-      </form>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ./wrapper -->
 
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
@@ -598,8 +346,6 @@
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
 <script src="
 https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
@@ -620,7 +366,7 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
                     var pagoAnticipado = parseInt(precioLibro / 2);
                     $('#pago-anticipado').val(pagoAnticipado);
                     
-                    // Puedes calcular el pago pen  diente restándole al total la parte anticipada.
+                    // Puedes calcular el pago pendiente restándole al total la parte anticipada.
                     $('#pago-pend').val((precioLibro - pagoAnticipado));
                 } else {
                     console.error("No se pudo obtener el precio del libro.");
@@ -629,27 +375,16 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
             .catch(error => console.error("Error:", error));
         }
     });
-
-    
 });
 
 </script>
 
 <script>
   $(function () {
-    var tabla = $("#tablaPedidos").DataTable({
+    $("#tablaPedidos").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-      colReorder: {
-        enable: false
-    },
-    "columnDefs": [
-      { targets: '_all', orderable: false }
-    ],
-      //"searching": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-  
-    
   });
 </script>
 
@@ -658,11 +393,11 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
     theme: 'bootstrap4',
 });
 
-  $('.modal',).on('shown.bs.modal', function () {
-    $('.select', this).select2({
-        theme: 'bootstrap4',
-        dropdownParent: $(this)
-    });
+$('.modal',).on('shown.bs.modal', function () {
+  $('.select', this).select2({
+      theme: 'bootstrap4',
+      dropdownParent: $(this)
+  });
 });
 
 </script>

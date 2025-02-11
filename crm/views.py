@@ -179,3 +179,9 @@ def generate_pdf(request, id):
     response['Content-Disposition'] = 'attachment; filename="documento.pdf"'
     return response
 
+def pedidos_list(request):
+    pedidos=Pedido.objects.all()
+    return render(request, 'pedidos_list.html', {
+        'pedidos':pedidos
+    })
+
