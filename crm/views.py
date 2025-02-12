@@ -185,3 +185,9 @@ def pedidos_list(request):
         'pedidos':pedidos
     })
 
+def book_list(request):
+    books=Book.objects.all()
+    return render(request, 'book_list.html', {
+        'books':books
+    })
+

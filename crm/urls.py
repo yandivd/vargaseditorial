@@ -7,5 +7,6 @@ urlpatterns = [
     path('ver-comprobante/<int:id>/', ver_comprobante, name='ver_comprobantes'),
     path('generate-pdf/<int:id>/', generate_pdf, name='generate_pdf'),
     path('pedidos_list/', pedidos_list, name='pedidos_list'),
+    path('books_list/', book_list, name='books_list'),
 
 ]
