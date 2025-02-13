@@ -21,7 +21,7 @@ def send_delivery_alerts():
     # Find Pedidos where fecha_entrega is within the next 5 days
     pedidos_to_alert = Pedido.objects.filter(
         fecha_entrega__lte=alert_date,
-        fecha_entrega__gte=today, # Ensure it's not in the past 
+        fecha_entrega__gte=today, # Ensure it's not in the past
     ).exclude(status=Estado.objects.get(id=8))
 
     for pedido in pedidos_to_alert:
