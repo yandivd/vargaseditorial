@@ -366,6 +366,9 @@
                           onclick="cargarIdEnModal(this)">
                           <i class="fa fa-cogs"></i>
                         </button>
+                        <a href="#" onclick="abrirVentana('{% url 'ver_label' i.id %}')" class="btn btn-success">
+                          <i class="fa fa-id-badge" aria-hidden="true"></i>
+                        </a>
                       </td>
                     </tr>
                     {% endfor %}

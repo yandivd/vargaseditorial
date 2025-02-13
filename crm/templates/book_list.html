@@ -276,7 +276,7 @@
                           data-toggle="modal" 
                           data-target="#modalCreate">
                           <i class="fa fa-plus mr-1" aria-hidden="true"></i>
-                          Crear Pedido 
+                          Crear Libro 
                         </button>
               </div>
               <!-- /.card-footer -->
@@ -313,7 +313,110 @@
     </div>
   </footer>
 </div>
-<!-- Modal de cambio de estado -->
+
+<!-- Modal de crear pedido -->
+<div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear nuevo pedido</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body">
+          <form id="createform">
+            {% csrf_token %}
+          <div class="row">
+            <!-- Columna Izquierda -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Libro</label>
+                <select class="form-control select" name="libro" required id="libro-select">
+                  <option value="">Seleccione un libro</option>
+                  {% for libro in libros %}
+                  <option value="{{ libro.id }}">{{ libro.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+  
+              <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" class="form-control" name="name" required placeholder="Nombre completo del cliente">
+              </div>
+  
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" class="form-control" name="telf" required placeholder="Número de teléfono" pattern="[0-9]{8}">
+              </div>
+            </div>
+  
+            <!-- Columna Derecha -->
+            <div class="col-md-6">
+             
+  
+              <div class="form-group">
+                <label>Fecha de Orden</label>
+                <input type="date" class="form-control datepicker" name="fecha_orden" value="{{ today|date:'Y-m-d' }}" required>
+              </div>
+  
+              <div class="form-group">
+                <label>Lugar de Recogida</label>
+                <input type="text" class="form-control" name="ubicacion" placeholder="Dirección de recogida" required>
+              </div>
+  
+              <div class="form-group">
+                <label>Pagos</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="number" 
+                    class="form-control" 
+                    name="pago_anticipado" 
+                    placeholder="Pago anticipado" 
+                    min="0" 
+                    step="1"
+                    required 
+                    id="pago-anticipado">
+                </div>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="number" class="form-control" name="pago_pend" 
+                         placeholder="Pago pendiente" min="0" step="1" required id="pago-pend">
+                </div>
+              </div>
+  
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="portada" id="portada">
+                <label class="form-check-label" for="portada">Portada especial</label>
+              </div>
+  
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="totalmente_pagado" id="total_pago">
+                <label class="form-check-label" for="total_pago">Totalmente pagado</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button 
+            type="button" 
+            class="btn btn-primary" 
+            onclick="enviarDatos()"
+        >Save changes</button>
+
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
@@ -444,7 +547,7 @@ function enviarDatos() {
         console.log('Pedido creado correctamente.');
         window.location.href = "/crm/"; // Recarga la página principal.
     } else {
-        console.error('Error al crear pedido:', data.mensaje);
+        console.error('Error al crear libro:', data.mensaje);
     }
     console.log(data); // Mantén esto si quieres ver toda la respuesta.
 })
