@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+    body {
+      padding: 5px;
+      background-color: #fff;
+    }
+    .info {
+      margin-top: 5px;
+    }
+    .info-item {
+      margin-bottom: 3px;
+    }
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+<div style="width:150px; border-radius:4px; border:solid #ddd;">
+  
+<div class="header" style="text-align:center;">
+    <img src="{% static 'img/logo.png' %}" style="width: 100px; height: 40px;" alt="Logo"/>
+    <div class="titulo">Vargas Editorial</div>
+    <p>Tel: 54545068</p>
+</div>
+
+<div class="info" style="text-align:center;">
+<div class="info-item"><span class="label">ID:</span> {% if pedido.id < 10%}00{{ pedido.id }}{% elif pedido.id < 100%}0{{ pedido.id }}{% else %}{{ pedido.id }}{%endif%}</div>
+<div class="info-item"><span class="label">Cliente:</span> {{ pedido.name }}</div>
+<div class="info-item"><span class="label">Telefono:</span> {{ pedido.telf }}</div>
+<div class="info-item"><span class="label">Libro:</span> {{ pedido.libro }}</div>
+<div class="info-item"><span class="label">Pago Pendiente:</span> {{ pedido.pago_pend }}</div>
+
+</div>
+
+<p style='font-size:8pt;text-align:center;'>Gracias por su compra!</p>
+
+</div>
+
+<script>print();</script>
+
+</body></html>
+

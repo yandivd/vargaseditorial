@@ -130,6 +130,22 @@ def ver_comprobante(request, id):
         print(f"Error al obtener el comprobante {e}")
         return HttpResponse("Error al cargar datos.")
     
+def ver_label(request, id):
+    
+    try:
+        # Asumiendo que tienes una vista con acceso al id o pk
+        # Cambia esto según tus necesidades.
+        
+        # Obtén el objeto Pedido usando su ID o PK.
+        # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
+        comprobante = Pedido.objects.get(id=id)
+        print(comprobante)
+        return render(request, 'label.html', {'pedido': comprobante})
+    
+    except Exception as e:
+        print(f"Error al obtener el comprobante {e}")
+        return HttpResponse("Error al cargar datos.")
+    
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -184,4 +200,53 @@ def pedidos_list(request):
     return render(request, 'pedidos_list.html', {
         'pedidos':pedidos
     })
+
+def book_list(request):
+    books=Book.objects.all()
+    return render(request, 'book_list.html', {
+        'books':books
+    })
+
+def generate_label(request, id):
+    # 1. Renderiza el template HTML.
+    try:
+        # Asumiendo que tienes una vista con acceso al id o pk
+        # Cambia esto según tus necesidades.
+        
+        # Obtén el objeto Pedido usando su ID o PK.
+        # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
+        comprobante = Pedido.objects.get(id=id)
+    except Exception as e:
+        print(e)
+        
+
+    template = get_template('label.html') # Reemplaza 'mi_template.html' con el nombre de tu template.
+    context = {
+        'titulo': 'Mi Documento PDF',
+        'contenido': 'Este es el contenido generado desde el template.',
+        'logo_url': static('img/logo.png'),  # Ruta al logo (LOCAL)
+        'qr_code_url': static('img/qr.jpeg'),  # Ruta al código QR
+        'pedido': comprobante
+        # ... otros datos que necesitas pasar a tu template
+    }
+    html = template.render(context)
+
+    # 2. Crea un objeto BytesIO para guardar el PDF.
+    buffer = BytesIO()
+
+    # 3. Convierte el HTML a PDF usando xhtml2pdf.
+    pisa_status = pisa.CreatePDF(
+        html,                # El HTML a convertir
+        dest=buffer           # El buffer donde guardar el PDF
+    )
+
+    # Si hubo un error, lo puedes manejar aquí.
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF: <pre>' + html + '</pre>')
+
+    # 4. Regresa la respuesta HTTP con el PDF.
+    buffer.seek(0)
+    response = HttpResponse(buffer.read(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="documento.pdf"'
+    return response
 
