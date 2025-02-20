@@ -16,6 +16,13 @@ class Estado(models.Model):
     colored_name.allow_tags = True
     colored_name.short_description = 'Nombre'
 
+class Agente(models.Model):
+    name = models.CharField(max_length=150, blank=True, null=True)
+    code = models.CharField(max_length=8)
+    saldo = models.IntegerField(default=0)
+    def __str__(self):
+        return self.code
+
 class Pedido(models.Model):
     libro = models.ForeignKey(Book, verbose_name='Libro', on_delete=models.CASCADE)
     status = models.ForeignKey(Estado, verbose_name='Estado del Pedido', on_delete=models.CASCADE)
@@ -28,6 +35,7 @@ class Pedido(models.Model):
     pago_anticipado = models.IntegerField(default=0, verbose_name='Pago Anticipado')
     pago_pend = models.IntegerField(default=0, verbose_name='Pago Pendiente')
     totalmente_pagado = models.BooleanField(default=False, verbose_name='Totalmente Pago')
+    code_ref = models.ForeignKey(Agente, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name + ''+self.libro.title

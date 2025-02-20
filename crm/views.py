@@ -1,7 +1,7 @@
 import datetime
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from .models import Pedido, Estado, Book
+from .models import Pedido, Estado, Book, Agente
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -50,7 +50,8 @@ def index(request):
         'libros': Book.objects.all(),
         'nuevos_pedidos': Pedido.objects.filter(status=Estado.objects.get(id=1)).count(),
         'encuadernando': Pedido.objects.filter(status=Estado.objects.get(id=4)).count()+Pedido.objects.filter(status=Estado.objects.get(id=5)).count(),
-        'listos_entregar': Pedido.objects.filter(status=Estado.objects.get(id=7)).count()
+        'listos_entregar': Pedido.objects.filter(status=Estado.objects.get(id=7)).count(),
+        'agentes': Agente.objects.all()
     }
 
     if request.method == 'POST':
@@ -87,15 +88,24 @@ def api_create_pedido(request):
         fecha_entrega = nueva_fecha.strftime('%Y-%m-%d') ##ok
         ubicacion = request.POST.get('ubicacion')
         portada = request.POST.get('portada') ##ok
+        agente = Agente.objects.get(id=request.POST.get('agente'))
+
         if portada == 'on':
             portada = True
         else:
             portada = False
 
         pago_anticipado = request.POST.get('pago_anticipado') 
-        pago_anticipado = int(pago_anticipado)
         pago_pend = request.POST.get('pago_pend')
-        pago_pend = int(pago_pend)
+
+        pago_pend = int(pago_pend)  
+        pago_anticipado = int(pago_anticipado)
+
+        if agente:
+            agente.saldo+= libro.price - (libro.price*0.95)
+            agente.save()
+            # pago_anticipado = pago_anticipado*0.95
+            # pago_pend = pago_pend*0.95
 
         totalmente_pagado = request.POST.get('totalmente_pagado') ##ok
         if totalmente_pagado == 'on':

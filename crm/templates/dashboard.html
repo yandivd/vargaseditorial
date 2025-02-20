@@ -488,7 +488,19 @@
                 <label>Teléfono</label>
                 <input type="text" class="form-control" name="telf" required placeholder="Número de teléfono" pattern="[0-9]{8}">
               </div>
+
+              <div class="form-group">
+                <label>Referencia</label>
+                <select class="form-control select" name="agente" required id="agente-select">
+                  <option value="">Seleccione un Agente</option>
+                  {% for agente in agentes %}
+                  <option value="{{ agente.id }}">{{ agente }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
+
+            
   
             <!-- Columna Derecha -->
             <div class="col-md-6">
@@ -603,29 +615,46 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
 "></script>
 
 <script>
-  $(document).ready(function(){
+  $(document).ready(function() {
+    let originalPrice = null; // Almacenará el precio original del libro
+
+    // Evento al seleccionar un libro
     $('#libro-select').on('change', function() {
-        var selectedBookId = $(this).val();
-        
-        if (selectedBookId !== '') {
+        const selectedBookId = $(this).val();
+        if (selectedBookId) {
             fetch(`/api_book_detail/${selectedBookId}/`)
-            .then(response => response.json())
-            .then(data => {
-                var precioLibro = data.precio; // Ajusta según sea necesario
-                
-                if (precioLibro) {
-                    var pagoAnticipado = parseInt(precioLibro / 2);
-                    $('#pago-anticipado').val(pagoAnticipado);
-                    
-                    // Puedes calcular el pago pendiente restándole al total la parte anticipada.
-                    $('#pago-pend').val((precioLibro - pagoAnticipado));
-                } else {
-                    console.error("No se pudo obtener el precio del libro.");
-                }
-            })
-            .catch(error => console.error("Error:", error));
+                .then(response => response.json())
+                .then(data => {
+                    originalPrice = data.precio; // Guarda el precio original
+                    updatePayments(); // Actualiza los pagos
+                })
+                .catch(error => console.error("Error:", error));
         }
     });
+
+    // Evento al seleccionar un agente
+    $('#agente-select').on('change', function() {
+        updatePayments(); // Actualiza los pagos al cambiar el agente
+    });
+
+    // Función para calcular pagos
+    function updatePayments() {
+        if (!originalPrice) return; // Si no hay libro seleccionado
+
+        const isAgentSelected = $('#agente-select').val() !== '';
+        let anticipado = originalPrice / 2;
+        let pend = originalPrice / 2;
+
+        // Aplica 10% de descuento a ambos si hay agente
+        if (isAgentSelected) {
+            anticipado *= 0.95;
+            pend *= 0.95;
+        }
+
+        // Actualiza los campos (con redondeo)
+        $('#pago-anticipado').val(Math.round(anticipado));
+        $('#pago-pend').val(Math.round(pend));
+    }
 });
 
 </script>
