@@ -1,7 +1,8 @@
 import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from .models import Pedido, Estado, Book, Agente
+from store.models import Category
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -88,7 +89,10 @@ def api_create_pedido(request):
         fecha_entrega = nueva_fecha.strftime('%Y-%m-%d') ##ok
         ubicacion = request.POST.get('ubicacion')
         portada = request.POST.get('portada') ##ok
-        agente = Agente.objects.get(id=request.POST.get('agente'))
+        try:
+            agente = Agente.objects.get(id=request.POST.get('agente'))
+        except:
+            agente = None
 
         if portada == 'on':
             portada = True
@@ -214,7 +218,8 @@ def pedidos_list(request):
 def book_list(request):
     books=Book.objects.all()
     return render(request, 'book_list.html', {
-        'books':books
+        'books':books,
+        'categories': Category.objects.all(),
     })
 
 def generate_label(request, id):
@@ -259,4 +264,59 @@ def generate_label(request, id):
     response = HttpResponse(buffer.read(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="documento.pdf"'
     return response
+
+
+def create_book(request):
+    if request.method == 'POST':
+        print('entro al post')
+        try:
+            # Recuperar datos del formulario
+            img = request.FILES.get('img')  # Obtener la imagen subida
+            title = request.POST.get('title')
+            author = request.POST.get('author')
+            category_ids = request.POST.getlist('category')  # Obtener lista de IDs de categorías
+            no_pag = int(request.POST.get('no_pag', 1))  # Número de páginas (por defecto 1)
+            desc = request.POST.get('desc')
+            price = int(request.POST.get('price'))
+            discount = request.POST.get('discount')  # Descuento opcional
+            valoration = int(request.POST.get('valoration', 5))  # Valoración (por defecto 5)
+            recomendated = request.POST.get('recomendated') == 'on'  # Checkbox booleano
+            existencia = request.POST.get('existencia') == 'on'  # Checkbox booleano
+
+            # Crear una nueva instancia del modelo Book
+            book = Book.objects.create(
+                img=img,
+                title=title,
+                author=author,
+                no_pag=no_pag,
+                desc=desc,
+                price=price,
+                valoration=valoration,
+                recomendated=recomendated,
+                existencia=existencia,
+            )
+
+            # Si se proporciona un descuento, agregarlo al libro
+            if discount:
+                book.discount = int(discount)
+
+            book.save()  # Guardar el libro en la base de datos
+
+            # Asociar categorías al libro (ManyToManyField)
+            categories = Category.objects.filter(id__in=category_ids)
+            book.category.set(categories)
+
+            return redirect('book_list')  # Redirigir a la lista de libros después de guardar
+
+        except Exception as e:
+            print(f"Error al crear el libro: {e}")
+            return HttpResponseBadRequest("Error al procesar los datos del formulario")
+
+    else:
+        categories = Category.objects.all()  # Obtener todas las categorías disponibles
+        # return render(request, 'create_book.html', {'categories': categories})
+
+        return redirect('book_list')  # Redirect to a book list view
+
+
 

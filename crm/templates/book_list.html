@@ -314,109 +314,119 @@
   </footer>
 </div>
 
-<!-- Modal de crear pedido -->
+<!-- Modal de crear libro -->
 <div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crear nuevo pedido</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Registrar nuevo libro</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form id="createform">
+          <form id="createform" enctype="multipart/form-data">  <!-- Important: Add enctype for file uploads -->
             {% csrf_token %}
           <div class="row">
             <!-- Columna Izquierda -->
             <div class="col-md-6">
               <div class="form-group">
-                <label>Libro</label>
-                <select class="form-control select" name="libro" required id="libro-select">
-                  <option value="">Seleccione un libro</option>
-                  {% for libro in libros %}
-                  <option value="{{ libro.id }}">{{ libro.title }}</option>
+                <label>Imagen</label>
+                <input type="file" class="form-control" name="img" accept="image/*" required>
+                <small class="text-muted">Seleccione una imagen para la portada del libro.</small>
+              </div>
+
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" name="title" required placeholder="Título del libro">
+              </div>
+
+              <div class="form-group">
+                <label>Autor</label>
+                <input type="text" class="form-control" name="author" required placeholder="Nombre del autor">
+              </div>
+
+              <div class="form-group">
+                <label>Categorías</label>
+                <select class="form-control select" name="category" multiple required id="category-select">
+                  {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
                   {% endfor %}
                 </select>
+                 <small class="text-muted">Seleccione una o más categorías para el libro.</small>
               </div>
-  
+
               <div class="form-group">
-                <label>Cliente</label>
-                <input type="text" class="form-control" name="name" required placeholder="Nombre completo del cliente">
+                <label>Número de Páginas</label>
+                <input type="number" class="form-control" name="no_pag" required placeholder="Cantidad de páginas" min="1">
               </div>
-  
+
               <div class="form-group">
-                <label>Teléfono</label>
-                <input type="text" class="form-control" name="telf" required placeholder="Número de teléfono" pattern="[0-9]{8}">
-              </div>
-            </div>
-  
-            <!-- Columna Derecha -->
-            <div class="col-md-6">
-             
-  
-              <div class="form-group">
-                <label>Fecha de Orden</label>
-                <input type="date" class="form-control datepicker" name="fecha_orden" value="{{ today|date:'Y-m-d' }}" required>
-              </div>
-  
-              <div class="form-group">
-                <label>Lugar de Recogida</label>
-                <input type="text" class="form-control" name="ubicacion" placeholder="Dirección de recogida" required>
-              </div>
-  
-              <div class="form-group">
-                <label>Pagos</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">$</span>
-                  </div>
-                  <input type="number" 
-                    class="form-control" 
-                    name="pago_anticipado" 
-                    placeholder="Pago anticipado" 
-                    min="0" 
-                    step="1"
-                    required 
-                    id="pago-anticipado">
-                </div>
+                <label>Precio</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                   </div>
-                  <input type="number" class="form-control" name="pago_pend" 
-                         placeholder="Pago pendiente" min="0" step="1" required id="pago-pend">
+                  <input type="number" class="form-control" name="price" required placeholder="Precio del libro" min="0" step="0.01">
                 </div>
               </div>
-  
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="portada" id="portada">
-                <label class="form-check-label" for="portada">Portada especial</label>
+            </div>
+
+            <!-- Columna Derecha -->
+            <div class="col-md-6">
+
+              <div class="form-group">
+                <label>Descuento (%)</label>
+                <input type="number" class="form-control" name="discount" placeholder="Descuento (opcional)" min="0" max="100" step="1">
+                <small class="text-muted">Dejar en blanco si no hay descuento.</small>
               </div>
-  
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="totalmente_pagado" id="total_pago">
-                <label class="form-check-label" for="total_pago">Totalmente pagado</label>
+
+
+              <div class="form-group">
+                <label>Valoración (1-5)</label>
+                <input type="number" class="form-control" name="valoration" required placeholder="Valoración del libro" min="1" max="5" value="5">
               </div>
+
+
+              <div class="form-group">
+                <label>Descripción</label>
+                <textarea class="form-control" name="desc" rows="3" required placeholder="Descripción del libro"></textarea>
+              </div>
+
+
+              <div class="form-group">
+                  <div class="form-check">
+                      <input type="checkbox" class="form-check-input" name="recomendated" id="recomendated">
+                      <label class="form-check-label" for="recomendated">Recomendado</label>
+                  </div>
+                  <div class="form-check">
+                      <input type="checkbox" class="form-check-input" name="existencia" id="existencia" checked>
+                      <label class="form-check-label" for="existencia">En Existencia</label>
+                  </div>
+              </div>
+
             </div>
           </div>
         </div>
         <div class="card-footer">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button 
-            type="button" 
-            class="btn btn-primary" 
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button
+            type="button"
+            class="btn btn-primary"
             onclick="enviarDatos()"
-        >Save changes</button>
+        >Guardar</button>
 
       </form>
       </div>
     </div>
   </div>
 </div>
+
+
+
 
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
@@ -454,7 +464,7 @@
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
 <script src="{% static 'crm/plugins/jszip/jszip.min.js' %}"></script>
 <script src="{% static 'crm/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'crm/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{% static 'crm/plugins/pdfmake/vfs_fonts.js' %}"></script>
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'crm/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
@@ -465,7 +475,7 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
 
 <script>
   $(document).ready(function(){
-    $('#libro-select').on('change', function() {
+    $('#book-select').on('change', function() {
         var selectedBookId = $(this).val();
         
         if (selectedBookId !== '') {
