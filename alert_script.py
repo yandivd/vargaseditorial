@@ -16,7 +16,7 @@ def send_delivery_alerts():
 
     today = datetime.date.today()
     # Calculate the date 5 days from now
-    alert_date = today + datetime.timedelta(days=5)
+    alert_date = today + datetime.timedelta(days=2)
 
     # Find Pedidos where fecha_entrega is within the next 5 days
     pedidos_to_alert = Pedido.objects.filter(
