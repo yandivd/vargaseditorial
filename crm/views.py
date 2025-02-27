@@ -67,9 +67,10 @@ def index(request):
         ### Hacer validaciones para que cuando cambie a entregado se sume el pago pendiente ###
         ### al original y demas cambios que dependen del cambio de estado #####################
         if new_estado == Estado.objects.get(id=8):
+            pedido.pago_anticipado+=pedido.pago_pend
             pedido.pago_pend=0
             pedido.totalmente_pagado=True
-            
+
         pedido.save()
 
         return redirect('dashboard')
@@ -99,10 +100,10 @@ def api_create_pedido(request):
         else:
             portada = False
 
-        pago_anticipado = request.POST.get('pago_anticipado') 
+        pago_anticipado = request.POST.get('pago_anticipado')
         pago_pend = request.POST.get('pago_pend')
 
-        pago_pend = int(pago_pend)  
+        pago_pend = int(pago_pend)
         pago_anticipado = int(pago_anticipado)
 
         if agente:
@@ -119,47 +120,47 @@ def api_create_pedido(request):
 
         libro.sales_amount=libro.sales_amount+1
         libro.save()
-        pedido= Pedido.objects.create(libro=libro, status=status, name=cliente, 
-                                      telf=telf, fecha_orden=fecha_orden, fecha_entrega=fecha_entrega, 
+        pedido= Pedido.objects.create(libro=libro, status=status, name=cliente,
+                                      telf=telf, fecha_orden=fecha_orden, fecha_entrega=fecha_entrega,
                                       ubicacion=ubicacion, portada=portada, pago_anticipado=pago_anticipado,
                                       pago_pend=pago_pend, totalmente_pagado=totalmente_pagado)
         #### Hay que tener en cuenta de campos que dependen solo de la creacion del pedido, como estado etc ######
         return JsonResponse({
             'status': 'OK'
         })
-    
+
 def ver_comprobante(request, id):
-    
+
     try:
         # Asumiendo que tienes una vista con acceso al id o pk
         # Cambia esto según tus necesidades.
-        
+
         # Obtén el objeto Pedido usando su ID o PK.
         # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
         comprobante = Pedido.objects.get(id=id)
         print(comprobante)
         return render(request, 'invoice.html', {'pedido': comprobante})
-    
+
     except Exception as e:
         print(f"Error al obtener el comprobante {e}")
         return HttpResponse("Error al cargar datos.")
-    
+
 def ver_label(request, id):
-    
+
     try:
         # Asumiendo que tienes una vista con acceso al id o pk
         # Cambia esto según tus necesidades.
-        
+
         # Obtén el objeto Pedido usando su ID o PK.
         # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
         comprobante = Pedido.objects.get(id=id)
         print(comprobante)
         return render(request, 'label.html', {'pedido': comprobante})
-    
+
     except Exception as e:
         print(f"Error al obtener el comprobante {e}")
         return HttpResponse("Error al cargar datos.")
-    
+
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -171,13 +172,13 @@ def generate_pdf(request, id):
     try:
         # Asumiendo que tienes una vista con acceso al id o pk
         # Cambia esto según tus necesidades.
-        
+
         # Obtén el objeto Pedido usando su ID o PK.
         # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
         comprobante = Pedido.objects.get(id=id)
     except Exception as e:
         print(e)
-        
+
 
     template = get_template('invoice.html') # Reemplaza 'mi_template.html' con el nombre de tu template.
     context = {
@@ -227,13 +228,13 @@ def generate_label(request, id):
     try:
         # Asumiendo que tienes una vista con acceso al id o pk
         # Cambia esto según tus necesidades.
-        
+
         # Obtén el objeto Pedido usando su ID o PK.
         # Reemplaza 'pk' por cualquier otro parámetro que uses para identificarlo.
         comprobante = Pedido.objects.get(id=id)
     except Exception as e:
         print(e)
-        
+
 
     template = get_template('label.html') # Reemplaza 'mi_template.html' con el nombre de tu template.
     context = {
