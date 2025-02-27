@@ -331,7 +331,9 @@
                       <th>Fecha de Orden</th>
                       <th>Fecha de Entrega</th>
                       <th>Lugar de Entrega</th>
+                      <th>Pago Anticipado</th>
                       <th>Pago Pendiente</th>
+                      <th>Codigo Desc.</th>
                       <th>Estado</th>
                       <th>Opciones</th>
                     </tr>
@@ -350,7 +352,9 @@
                       <td>{{i.fecha_orden}}</td>
                       <td>{{i.fecha_entrega}}</td>
                       <td>{{i.ubicacion}}</td>
+                      <td>$ {{i.pago_anticipado}}</td>
                       <td>$ {{i.pago_pend}}</td>
+                      <td>$ {{i.code_ref}}</td>
                       <td>
                           {{ i.status }}
                       </td>
