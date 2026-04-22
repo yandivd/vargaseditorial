@@ -17,6 +17,7 @@ class Book(models.Model):
     no_pag = models.IntegerField(default=1, verbose_name='Numero de Paginas')
     desc = models.TextField(verbose_name='Descripcion')
     price = models.IntegerField(verbose_name='Precio')
+    price_usd = models.FloatField(verbose_name='Precio USD', null=True, blank=True)
     sales_amount = models.IntegerField(default=0, verbose_name='Cantidad vendida')
     date_added = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de agregado')
     recomendated = models.BooleanField(default=False, verbose_name='Recomendado')

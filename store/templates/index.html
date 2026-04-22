@@ -19,27 +19,43 @@
         </svg>
       </div>
       <div class="swiper main-swiper">
-        <div class="swiper-wrapper d-flex align-items-center">
-          <div class="swiper-slide">
+    <div class="swiper-wrapper d-flex align-items-center">
+        <!-- Primer Banner -->
+        <!--<div class="swiper-slide">-->
+        <!--    <div class="container">-->
+        <!--        <div class="row d-flex flex-column-reverse flex-md-row align-items-center">-->
+        <!--            <div class="col-md-5 offset-md-1 mt-5 mt-md-0 text-center text-md-start">-->
+        <!--                <div class="banner-content">-->
+        <!--                    <h2>La Colección de Libros Harry Potter</h2>-->
+        <!--                    <p>Mejor Oferta. Ahorre 10%. Consíguelo ahora!</p>-->
+        <!--                    <a href="https://wa.me/5354545068" class="btn mt-3">Comprar Colección</a>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="col-md-6 text-center">-->
+        <!--                <div class="image-holder">-->
+        <!--                    <img src="{% static 'store/images/banner-image2.png' %}" class="img-fluid" alt="banner" style="width: 50%; height: 50%;">-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--</div>-->
+
+        <!-- Segundo Banner (Solo Imagen) -->
+        <div class="swiper-slide">
             <div class="container">
-              <div class="row d-flex flex-column-reverse flex-md-row align-items-center">
-                <div class="col-md-5 offset-md-1 mt-5 mt-md-0 text-center text-md-start">
-                  <div class="banner-content">
-                    <h2>La Colección de Libros Harry Potter</h2>
-                    <p>Mejor Oferta. Ahorre 10%. Consíguelo ahora!</p>
-                    <a href="https://wa.me/5354545068" class="btn mt-3">Comprar Colección</a>
-                  </div>
+                <div class="row align-items-center">
+                    <div class="col-12 text-center">
+                        <div class="image-holder">
+                            <!-- Imagen a lo largo -->
+                            <img src="{% static 'store/images/banner-onix.jpg' %}" class="img-fluid" alt="banner" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 text-center">
-                  <div class="image-holder">
-                    <img src="{% static 'store/images/banner-image2.png' %}" class="img-fluid" alt="banner" style="width: 50%; height: 50%;">
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
+
     </section>
 
     <section id="best-selling-items" class="position-relative padding-large ">
@@ -108,7 +124,7 @@
                 {% endfor %}
             </div>
         </div>
-        
+
       </div>
     </section>
 

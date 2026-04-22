@@ -90,6 +90,7 @@ def api_create_pedido(request):
         fecha_entrega = nueva_fecha.strftime('%Y-%m-%d') ##ok
         ubicacion = request.POST.get('ubicacion')
         portada = request.POST.get('portada') ##ok
+        notas = request.POST.get('notas') ##ok
         try:
             agente = Agente.objects.get(id=request.POST.get('agente'))
         except:
@@ -123,7 +124,8 @@ def api_create_pedido(request):
         pedido= Pedido.objects.create(libro=libro, status=status, name=cliente,
                                       telf=telf, fecha_orden=fecha_orden, fecha_entrega=fecha_entrega,
                                       ubicacion=ubicacion, portada=portada, pago_anticipado=pago_anticipado,
-                                      pago_pend=pago_pend, totalmente_pagado=totalmente_pagado)
+                                      pago_pend=pago_pend, totalmente_pagado=totalmente_pagado, code_ref=agente,
+                                      notas=notas)
         #### Hay que tener en cuenta de campos que dependen solo de la creacion del pedido, como estado etc ######
         return JsonResponse({
             'status': 'OK'
@@ -319,5 +321,9 @@ def create_book(request):
 
         return redirect('book_list')  # Redirect to a book list view
 
+@login_required
+def finanzas(request):
+
+    return render(request, 'finanzas.html')
 
 

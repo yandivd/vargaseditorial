@@ -36,11 +36,12 @@ class Pedido(models.Model):
     pago_pend = models.IntegerField(default=0, verbose_name='Pago Pendiente')
     totalmente_pagado = models.BooleanField(default=False, verbose_name='Totalmente Pago')
     code_ref = models.ForeignKey(Agente, blank=True, null=True, on_delete=models.CASCADE)
+    notas = models.CharField(max_length=200, verbose_name='Notas', null=True, blank=True)
 
     def __str__(self):
         return self.name + ''+self.libro.title
 
     def colored_status(self):
         return self.status.colored_name()
-    
+
     colored_status.short_description = 'Estado del Pedido'

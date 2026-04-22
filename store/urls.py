@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/books/', api_books),
     path('book/<int:id>/', book_detail, name='book_detail'),
     path('api_book_detail/<int:id>/', get_book_price),
+    # path('aumentar_precio/', aumentar_precio_libros)
 ]

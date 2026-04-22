@@ -49,6 +49,9 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{% url 'tienda' %}" class="nav-link">Tienda</a>
       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'dashfin' %}" class="nav-link">Finanzas</a>
+      </li>
     </ul>
 
     <!-- Right navbar links -->
@@ -333,7 +336,7 @@
                       <th>Lugar de Entrega</th>
                       <th>Pago Anticipado</th>
                       <th>Pago Pendiente</th>
-                      <th>Codigo Desc.</th>
+                      <th>Notas</th>
                       <th>Estado</th>
                       <th>Opciones</th>
                     </tr>
@@ -354,7 +357,7 @@
                       <td>{{i.ubicacion}}</td>
                       <td>$ {{i.pago_anticipado}}</td>
                       <td>$ {{i.pago_pend}}</td>
-                      <td>$ {{i.code_ref}}</td>
+                      <td>{{i.notas}}</td>
                       <td>
                           {{ i.status }}
                       </td>
@@ -362,9 +365,9 @@
                         <a href="#" onclick="abrirVentana('{% url 'ver_comprobantes' i.id %}')" class="btn btn-warning">
                           <i class="fa fa-download"></i>
                         </a>
-                        <button 
-                          class="btn btn-primary" 
-                          data-toggle="modal" 
+                        <button
+                          class="btn btn-primary"
+                          data-toggle="modal"
                           data-target="#exampleModal"
                           data-id="{{ i.id }}"
                           onclick="cargarIdEnModal(this)">
@@ -383,12 +386,12 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-                <button 
-                          class="btn btn-primary" 
-                          data-toggle="modal" 
+                <button
+                          class="btn btn-primary"
+                          data-toggle="modal"
                           data-target="#modalCreate">
                           <i class="fa fa-plus mr-1" aria-hidden="true"></i>
-                          Crear Pedido 
+                          Crear Pedido
                         </button>
                         <a href="{% url 'pedidos_list' %}" class="btn btn-sm btn-secondary float-right">Ver todas las ordenes</a>
               </div>
@@ -399,7 +402,7 @@
           <!-- /.col -->
 
             <!-- PRODUCT LIST -->
-            
+
             <!-- /.card -->
           </div>
           <!-- /.col -->
@@ -482,12 +485,12 @@
                   {% endfor %}
                 </select>
               </div>
-  
+
               <div class="form-group">
                 <label>Cliente</label>
                 <input type="text" class="form-control" name="name" required placeholder="Nombre completo del cliente">
               </div>
-  
+
               <div class="form-group">
                 <label>Teléfono</label>
                 <input type="text" class="form-control" name="telf" required placeholder="Número de teléfono" pattern="[0-9]{8}">
@@ -504,65 +507,73 @@
               </div>
             </div>
 
-            
-  
+
+
             <!-- Columna Derecha -->
             <div class="col-md-6">
-             
-  
+
+
               <div class="form-group">
                 <label>Fecha de Orden</label>
                 <input type="date" class="form-control datepicker" name="fecha_orden" value="{{ today|date:'Y-m-d' }}" required>
               </div>
-  
+
               <div class="form-group">
                 <label>Lugar de Recogida</label>
                 <input type="text" class="form-control" name="ubicacion" placeholder="Dirección de recogida" required>
               </div>
-  
+
               <div class="form-group">
                 <label>Pagos</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                   </div>
-                  <input type="number" 
-                    class="form-control" 
-                    name="pago_anticipado" 
-                    placeholder="Pago anticipado" 
-                    min="0" 
+                  <input type="number"
+                    class="form-control"
+                    name="pago_anticipado"
+                    placeholder="Pago anticipado"
+                    min="0"
                     step="1"
-                    required 
+                    required
                     id="pago-anticipado">
                 </div>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                   </div>
-                  <input type="number" class="form-control" name="pago_pend" 
+                  <input type="number" class="form-control" name="pago_pend"
                          placeholder="Pago pendiente" min="0" step="1" required id="pago-pend">
                 </div>
               </div>
-  
+
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="portada" id="portada">
                 <label class="form-check-label" for="portada">Portada especial</label>
               </div>
-  
+
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="totalmente_pagado" id="total_pago">
                 <label class="form-check-label" for="total_pago">Totalmente pagado</label>
               </div>
             </div>
           </div>
+          <!---input para las notas-->
+          <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="text" class="form-control" name="notas"
+                         placeholder="Notas" min="0" step="1" required id="notas">
+                </div>
         </div>
         <div class="card-footer">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button 
-            type="button" 
-            class="btn btn-primary" 
+        <button
+            type="button"
+            class="btn btn-primary"
             onclick="enviarDatos()"
         >Save changes</button>
 
@@ -592,7 +603,7 @@
 <!-- ChartJS -->
 <script src="{% static 'crm/plugins/chart.js/Chart.min.js' %}"></script>
 <!-- Datatables -->
-{% comment %} <script src="https://code.jquery.com/jquery-3.7.0.js"></script> {% endcomment %} 
+{% comment %} <script src="https://code.jquery.com/jquery-3.7.0.js"></script> {% endcomment %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <!-- AdminLTE for demo purposes -->
@@ -666,21 +677,25 @@ https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
 <script>
   $(function () {
     var tabla = $("#tablaPedidos").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
       colReorder: {
         enable: false
-    },
-    "columnDefs": [
-      { targets: 0, orderable: true },
-      { targets: '_all', orderable: false }
-    ],
-      //"searching": false,
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-  
-    
+      },
+      columnDefs: [
+        { targets: 0, orderable: true },
+        { targets: "_all", orderable: false }
+      ]
+      // searching: false
+    });
+
+    tabla.buttons().container()
+      .appendTo('#tablaPedidos_wrapper .col-md-6:eq(0)');
   });
 </script>
+
 
 <script>
   $('.select').select2({
@@ -700,7 +715,7 @@ $('.modal',).on('shown.bs.modal', function () {
 // Función para formatear la visualización de los libros
 function formatLibro(libro) {
     if (!libro.id) return libro.text;
-    
+
     // Personaliza según tu modelo (ej: mostrar autor y año)
     const $libro = $(
         `<div class="select2-result-item">
@@ -722,7 +737,7 @@ function imprimir() {
 // Versión con Fetch API
 function enviarDatos() {
   const form = document.getElementById('createform');
-  
+
   if (!form) {
       console.error("No se encontró el formulario con ID 'createform'.");
       return;

@@ -10,5 +10,6 @@ urlpatterns = [
     path('generate-label/<int:id>/', generate_label, name='generate_label'),
     path('pedidos_list/', pedidos_list, name='pedidos_list'),
     path('books_list/', book_list, name='books_list'),
+    path('finanzas/', finanzas, name='dashfin'),
 
 ]

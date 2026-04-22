@@ -12,7 +12,7 @@ def index(request):
     best_selling_books = Book.objects.all().order_by('-sales_amount')[:5]
     best_rated = Book.objects.all().order_by('-valoration')[:3]
     added_latest = Book.objects.all().order_by('-date_added')[:3]
-    recomendated_books = Book.objects.filter(recomendated=True)[:3]
+    recomendated_books = Book.objects.all().order_by('?')[:3]
     discount_books = Book.objects.filter(discount__isnull=False).order_by('-discount')[:3]
     categories = Category.objects.all()
 
@@ -97,18 +97,46 @@ def logout_view(request):
 def get_book_price(request, id):
     try:
         book = Book.objects.get(id=id)
-        
+
         if book.discount is not None and book.discount > 0:
             precio_libro = round(book.price * (1 - (book.discount / 100)))
         else:
             precio_libro = book.price
-        
+
         return JsonResponse({
             'precio': precio_libro,
         })
-    
+
     except Book.DoesNotExist:
         return JsonResponse({
             'error': "El libro no existe.",
         }, status=404)
+
+from django.shortcuts import render
+from .models import Book
+
+def aumentar_precio_libros(request):
+    libros = Book.objects.all()
+    for libro in libros:
+        libro.price += 100
+        libro.save()
+    # Puedes redirigir a una página de confirmación o renderizar una plantilla
+    books = Book.objects.filter(existencia=True)
+    best_selling_books = Book.objects.all().order_by('-sales_amount')[:5]
+    best_rated = Book.objects.all().order_by('-valoration')[:3]
+    added_latest = Book.objects.all().order_by('-date_added')[:3]
+    recomendated_books = Book.objects.all().order_by('?')[:3]
+    discount_books = Book.objects.filter(discount__isnull=False).order_by('-discount')[:3]
+    categories = Category.objects.all()
+
+    return render(request, 'index.html', {
+        'books':books,
+        'best_rated': best_rated,
+        'best_selling_books': best_selling_books,
+        'added_latest': added_latest,
+        'recomendated_books':recomendated_books,
+        'discount_books': discount_books,
+        'categories': categories
+    })
+
 

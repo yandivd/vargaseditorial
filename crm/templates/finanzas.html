@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Finanzas | MultiCuentas - Predicción con Tasa de Crecimiento Real</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            padding: 24px 20px;
+        }
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            background: white;
+            padding: 18px 28px;
+            border-radius: 32px;
+            border: 1px solid #e9eef3;
+        }
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e293b, #2d3a4b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .badge-date {
+            background: #eef2ff;
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e40af;
+        }
+        .control-bar {
+            background: white;
+            border-radius: 28px;
+            padding: 16px 24px;
+            margin-bottom: 28px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .upload-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .upload-label {
+            background: #0f172a;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .reset-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-radius: 48px;
+        }
+        .filter-group label {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .filter-group input {
+            border: 1px solid #cbd5e1;
+            border-radius: 24px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .apply-filter {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 32px;
+            padding: 6px 16px;
+            cursor: pointer;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #64748b;
+        }
+        .tab-btn:hover {
+            background: #f1f5f9;
+        }
+        .tab-btn.active {
+            background: #0f172a;
+            color: white;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px 18px;
+            border: 1px solid #edf2f7;
+        }
+        .cash-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+        }
+        .cash-card .kpi-title {
+            color: #cbd5e1;
+        }
+        .cash-card .kpi-value {
+            color: #facc15;
+        }
+        .kpi-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #5b6e8c;
+            margin-bottom: 12px;
+        }
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+        .charts-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .chart-box {
+            flex: 1;
+            min-width: 260px;
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            border: 1px solid #eef2f8;
+        }
+        .chart-box h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+        }
+        canvas {
+            max-height: 260px;
+            width: 100%;
+        }
+        .full-width-chart {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 32px;
+            border: 1px solid #eef2f8;
+        }
+        .full-width-chart h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            border-left: 4px solid #f59e0b;
+            padding-left: 14px;
+        }
+        .year-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 20px;
+        }
+        .year-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 32px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+        }
+        .year-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .table-section {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+        }
+        .table-section h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid #eef2f8;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.7rem;
+            color: #6c7a91;
+        }
+        .positive { color: #15803d; font-weight: 600; }
+        .negative { color: #b91c1c; font-weight: 600; }
+        .ingreso-cell { color: #15803d; font-weight: 500; }
+        .gasto-cell { color: #b91c1c; font-weight: 500; }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 28px;
+            color: #64748b;
+        }
+        .resumen-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .resumen-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .resumen-stat {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+        }
+        .resumen-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .badge-prediction {
+            background: #f59e0b20;
+            border-left: 3px solid #f59e0b;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 12px;
+            color: #b45309;
+        }
+        .prediction-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+        }
+        .prediction-stat {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="header">
+        <h1>📊 MultiCuentas · Dashboard + Predicción por Tasa de Crecimiento</h1>
+        <div class="badge-date">💰 Cargue su archivo Excel para comenzar</div>
+    </div>
+
+    <div class="control-bar">
+        <div class="upload-group">
+            <label class="upload-label">
+                📂 Cargar archivo Excel
+                <input type="file" id="excelInput" accept=".xls, .xlsx, .csv" style="display: none;">
+            </label>
+            <button class="reset-btn" id="resetBtn">⟳ Limpiar todo</button>
+            <span class="file-info" id="fileStatus">⏳ Sin datos cargados</span>
+        </div>
+        <div class="filter-group" id="filterGroup" style="opacity:0.5; pointer-events:none;">
+            <label>📅 Desde:</label>
+            <input type="date" id="fechaDesde">
+            <label>Hasta:</label>
+            <input type="date" id="fechaHasta">
+            <button class="apply-filter" id="applyFilterBtn">Aplicar filtro</button>
+            <button class="reset-btn" id="clearFilterBtn">Limpiar</button>
+        </div>
+    </div>
+
+    <div class="tabs" id="tabsContainer"></div>
+    <div id="tabsContent"></div>
+
+    <div class="footer-note">
+        🔍 Las cuentas se ordenan de mayor a menor cantidad de operaciones · La pestaña "Resumen General" es la primera activa<br>
+        📈 La predicción se calcula: <strong>Promedio histórico × (1 + Tasa de crecimiento real del año actual)</strong>
+    </div>
+</div>
+
+<script>
+    let allTransactions = [];
+    let filteredTransactions = [];
+    let cuentasMap = new Map();
+    let activeTab = null;
+    let chartsInstances = {};
+    let yearlyChartsInstances = {};
+
+    const fileInput = document.getElementById('excelInput');
+    const resetBtn = document.getElementById('resetBtn');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const clearFilterBtn = document.getElementById('clearFilterBtn');
+    const fechaDesdeInput = document.getElementById('fechaDesde');
+    const fechaHastaInput = document.getElementById('fechaHasta');
+    const fileStatusSpan = document.getElementById('fileStatus');
+    const filterGroup = document.getElementById('filterGroup');
+    const tabsContainer = document.getElementById('tabsContainer');
+    const tabsContent = document.getElementById('tabsContent');
+
+    function limpiarYParsearNumero(valor) {
+        if (valor === undefined || valor === null || valor === '') return 0;
+        if (typeof valor === 'number') return valor;
+        let str = String(valor).trim();
+        str = str.replace(/\./g, '');
+        str = str.replace(/,/g, '.');
+        let num = parseFloat(str);
+        return isNaN(num) ? 0 : num;
+    }
+
+    function parseFecha(fechaRaw) {
+        if (!fechaRaw) return null;
+        if (fechaRaw instanceof Date && !isNaN(fechaRaw)) return new Date(fechaRaw);
+        if (typeof fechaRaw === 'string') {
+            const parts = fechaRaw.trim().split('-');
+            if (parts.length === 3) {
+                const monthsMap = { 'ene':0,'feb':1,'mar':2,'abr':3,'may':4,'jun':5,'jul':6,'ago':7,'sep':8,'sept':8,'oct':9,'nov':10,'dic':11 };
+                let day = parseInt(parts[0]);
+                let monthStr = parts[1].toLowerCase();
+                let year = parseInt(parts[2]);
+                if (!isNaN(day) && monthsMap[monthStr] !== undefined && !isNaN(year)) {
+                    return new Date(year, monthsMap[monthStr], day);
+                }
+            }
+            let d = new Date(fechaRaw);
+            if (!isNaN(d)) return d;
+        }
+        return null;
+    }
+
+    function aplicarFiltroFechasGlobal() {
+        if (allTransactions.length === 0) return;
+
+        let desde = fechaDesdeInput.value ? new Date(fechaDesdeInput.value) : null;
+        let hasta = fechaHastaInput.value ? new Date(fechaHastaInput.value) : null;
+
+        if (desde) desde.setHours(0,0,0,0);
+        if (hasta) hasta.setHours(23,59,59,999);
+
+        filteredTransactions = allTransactions.filter(tx => {
+            if (!tx.fechaObj) return false;
+            if (desde && tx.fechaObj < desde) return false;
+            if (hasta && tx.fechaObj > hasta) return false;
+            return true;
+        });
+        if (!desde && !hasta) filteredTransactions = [...allTransactions];
+
+        cuentasMap.clear();
+        for (const tx of filteredTransactions) {
+            if (!cuentasMap.has(tx.cuenta)) cuentasMap.set(tx.cuenta, []);
+            cuentasMap.get(tx.cuenta).push(tx);
+        }
+        renderTabs();
+    }
+
+    function mostrarEmptyState() {
+        tabsContainer.innerHTML = '';
+        tabsContent.innerHTML = `<div class="empty-state"><div style="font-size:64px;">📭</div><h3>No hay datos</h3><p>Cargue un Excel con columnas: Fecha, Cuentas, Categoría, Ingresos, Gastos</p></div>`;
+    }
+
+    function calcularEstadisticasCuenta(transactions) {
+        let ingresos = 0, gastos = 0;
+        const monthlyData = {};
+        const categoryMap = new Map();
+        for (const tx of transactions) {
+            ingresos += tx.ingresos;
+            gastos += tx.gastos;
+            if (tx.fechaObj && !isNaN(tx.fechaObj)) {
+                const monthKey = `${tx.fechaObj.getFullYear()}-${String(tx.fechaObj.getMonth()+1).padStart(2,'0')}`;
+                if (!monthlyData[monthKey]) monthlyData[monthKey] = { ingresos:0, gastos:0 };
+                monthlyData[monthKey].ingresos += tx.ingresos;
+                monthlyData[monthKey].gastos += tx.gastos;
+            }
+            if (!categoryMap.has(tx.categoria)) categoryMap.set(tx.categoria, { ingresos:0, gastos:0, count:0 });
+            const cat = categoryMap.get(tx.categoria);
+            cat.ingresos += tx.ingresos;
+            cat.gastos += tx.gastos;
+            cat.count++;
+        }
+        return { ingresos, gastos, monthlyData, categoryMap, transactionsCount: transactions.length };
+    }
+
+    function calcularDatosMultianualesCuenta(transactions) {
+        const monthlyNetoPorAnio = {};
+        for (const tx of transactions) {
+            if (!tx.fechaObj || isNaN(tx.fechaObj)) continue;
+            const year = tx.fechaObj.getFullYear();
+            const month = String(tx.fechaObj.getMonth() + 1).padStart(2,'0');
+            const neto = tx.ingresos - tx.gastos;
+            if (!monthlyNetoPorAnio[year]) {
+                monthlyNetoPorAnio[year] = {};
+                for (let i=1;i<=12;i++) monthlyNetoPorAnio[year][String(i).padStart(2,'0')] = 0;
+            }
+            monthlyNetoPorAnio[year][month] += neto;
+        }
+        return monthlyNetoPorAnio;
+    }
+
+    /**
+     * Predicción mejorada:
+     * 1. Calcula el promedio histórico para cada mes (años anteriores al actual)
+     * 2. Calcula la tasa de crecimiento real del año actual basada en los meses que ya tienen datos
+     *    comparando mes a mes con el año anterior (si existe)
+     * 3. Aplica esa tasa de crecimiento al promedio histórico para predecir los meses sin datos
+     */
+    function calcularPrediccionConTasaCrecimiento(monthlyNetoPorAnio) {
+        const years = Object.keys(monthlyNetoPorAnio).map(Number).sort((a,b)=>a-b);
+        if (years.length < 2) return null; // Necesitamos al menos 2 años para calcular tasa de crecimiento
+
+        const currentYear = Math.max(...years);
+        const previousYear = years[years.length - 2];
+        const currentData = monthlyNetoPorAnio[currentYear];
+        const previousData = monthlyNetoPorAnio[previousYear];
+
+        if (!currentData || !previousData) return null;
+
+        // 1. Calcular tasas de crecimiento para los meses que YA tienen datos en el año actual
+        const tasasCrecimiento = [];
+        let sumTasa = 0;
+        let mesesConDatos = 0;
+
+        for (let m = 1; m <= 12; m++) {
+            const monthStr = String(m).padStart(2,'0');
+            const valorActual = currentData[monthStr] || 0;
+            const valorAnterior = previousData[monthStr] || 0;
+
+            // Solo consideramos meses donde el año actual tiene dato REAL (no cero)
+            // y el año anterior tiene dato (puede ser cero, eso da una tasa infinita, la saltamos)
+            if (valorActual !== 0 && valorAnterior !== 0) {
+                const tasa = (valorActual - valorAnterior) / Math.abs(valorAnterior);
+                tasasCrecimiento.push(tasa);
+                sumTasa += tasa;
+                mesesConDatos++;
+            }
+        }
+
+        // Si no hay suficientes meses con datos reales, usamos una tasa conservadora (promedio histórico simple)
+        let tasaCrecimientoPromedio = 0;
+        let metodoUsado = "promedio histórico simple";
+
+        if (mesesConDatos >= 2) {
+            tasaCrecimientoPromedio = sumTasa / mesesConDatos;
+            metodoUsado = `tasa de crecimiento real (${mesesConDatos} meses: ${(tasaCrecimientoPromedio * 100).toFixed(1)}%)`;
+        } else {
+            // Si no hay suficientes datos, calculamos crecimiento interanual total
+            let totalActual = 0, totalAnterior = 0;
+            for (let m = 1; m <= 12; m++) {
+                const monthStr = String(m).padStart(2,'0');
+                totalActual += currentData[monthStr] || 0;
+                totalAnterior += previousData[monthStr] || 0;
+            }
+            if (totalAnterior !== 0) {
+                tasaCrecimientoPromedio = (totalActual - totalAnterior) / Math.abs(totalAnterior);
+                metodoUsado = `crecimiento interanual total (${(tasaCrecimientoPromedio * 100).toFixed(1)}%)`;
+            } else {
+                tasaCrecimientoPromedio = 0;
+                metodoUsado = "sin crecimiento (datos insuficientes)";
+            }
+        }
+
+        // 2. Calcular promedio histórico para cada mes (excluyendo el año actual)
+        const promediosHistoricos = {};
+        const yearsHistoricos = years.filter(y => y !== currentYear);
+
+        for (let m = 1; m <= 12; m++) {
+            const monthStr = String(m).padStart(2,'0');
+            let suma = 0;
+            let count = 0;
+            for (const year of yearsHistoricos) {
+                const val = monthlyNetoPorAnio[year]?.[monthStr];
+                if (val !== undefined && val !== 0) {
+                    suma += val;
+                    count++;
+                }
+            }
+            promediosHistoricos[monthStr] = count > 0 ? suma / count : 0;
+        }
+
+        // 3. Generar predicción: promedio histórico × (1 + tasa de crecimiento)
+        const prediccion = {};
+        for (let m = 1; m <= 12; m++) {
+            const monthStr = String(m).padStart(2,'0');
+            const valorReal = currentData[monthStr] || 0;
+
+            if (valorReal !== 0) {
+                prediccion[monthStr] = null; // Ya tiene dato real, no predecimos
+            } else {
+                const promedioHistorico = promediosHistoricos[monthStr];
+                if (promedioHistorico === 0) {
+                    prediccion[monthStr] = 0;
+                } else {
+                    let valorPredicho = promedioHistorico * (1 + tasaCrecimientoPromedio);
+                    // Ajuste: si la predicción es negativa pero el promedio histórico era positivo, la limitamos a 0
+                    if (valorPredicho < 0 && promedioHistorico > 0) valorPredicho = 0;
+                    prediccion[monthStr] = Math.round(valorPredicho);
+                }
+            }
+        }
+
+        return {
+            currentYear,
+            prediccion,
+            tasaCrecimiento: tasaCrecimientoPromedio,
+            metodoUsado,
+            mesesConDatos,
+            promediosHistoricos
+        };
+    }
+
+    function renderCuentaDashboard(cuentaNombre) {
+        const transactions = cuentasMap.get(cuentaNombre) || [];
+        if (!transactions.length) return;
+
+        const stats = calcularEstadisticasCuenta(transactions);
+        const monthlyNetoPorAnio = calcularDatosMultianualesCuenta(transactions);
+        const cash = stats.ingresos - stats.gastos;
+        const margen = stats.ingresos > 0 ? ((cash / stats.ingresos) * 100).toFixed(1) : 0;
+        const safeId = cuentaNombre.replace(/[^a-zA-Z0-9]/g, '_');
+
+        // Pre-calcular info de predicción para mostrar en el badge
+        const prediccionInfo = calcularPrediccionConTasaCrecimiento(monthlyNetoPorAnio);
+        let badgeHtml = '<div class="badge-prediction">✨ Predicción: ';
+        if (prediccionInfo && prediccionInfo.tasaCrecimiento !== undefined) {
+            const signo = prediccionInfo.tasaCrecimiento >= 0 ? '+' : '';
+            badgeHtml += `Tasa de crecimiento aplicada: ${signo}${(prediccionInfo.tasaCrecimiento * 100).toFixed(1)}% (${prediccionInfo.metodoUsado})`;
+        } else {
+            badgeHtml += `No hay suficientes datos históricos para predecir (se necesitan al menos 2 años)`;
+        }
+        badgeHtml += '</div>';
+
+        const html = `
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">💰 Ingresos Totales</div><div class="kpi-value">${stats.ingresos.toLocaleString('es-AR')}</div></div>
+                <div class="kpi-card"><div class="kpi-title">💸 Gastos Totales</div><div class="kpi-value">${stats.gastos.toLocaleString('es-AR')}</div></div>
+                <div class="kpi-card cash-card"><div class="kpi-title">💵 CASH ACTUAL</div><div class="kpi-value">${cash.toLocaleString('es-AR')}</div></div>
+                <div class="kpi-card"><div class="kpi-title">📊 Transacciones</div><div class="kpi-value">${stats.transactionsCount}</div></div>
+                <div class="kpi-card"><div class="kpi-title">⭐ Margen Neto</div><div class="kpi-value">${margen}%</div></div>
+            </div>
+            <div class="charts-row">
+                <div class="chart-box"><h3>📆 Evolución Mensual</h3><canvas id="monthlyChart_${safeId}"></canvas></div>
+                <div class="chart-box"><h3>🏷️ Top Categorías por Neto</h3><canvas id="categoryChart_${safeId}"></canvas></div>
+            </div>
+            <div class="full-width-chart">
+                <h3>📈 Comparativa Multianual (Neto Mensual) + Predicción por Tasa de Crecimiento 🔮</h3>
+                <div class="year-selector" id="yearSelector_${safeId}"></div>
+                <canvas id="yearlyChart_${safeId}"></canvas>
+                ${badgeHtml}
+            </div>
+            <div class="table-section">
+                <h3>📋 Resumen por Categoría</h3>
+                <table><thead><tr><th>Categoría</th><th>Ingresos (MN)</th><th>Gastos (MN)</th><th>Neto (MN)</th><th>Transacciones</th></tr></thead>
+                <tbody id="categoryTable_${safeId}"></tbody></table>
+            </div>
+            <div class="table-section">
+                <h3>🕒 Últimas 10 Transacciones</h3>
+                <table><thead><tr><th>Fecha</th><th>Categoría</th><th>Ingreso</th><th>Gasto</th></tr></thead>
+                <tbody id="ultimasTable_${safeId}"></tbody></table>
+            </div>
+        `;
+        tabsContent.innerHTML = html;
+        renderMonthlyChart(safeId, stats.monthlyData);
+        renderCategoryChart(safeId, stats.categoryMap);
+        renderCategoryTable(safeId, stats.categoryMap);
+        renderUltimasTransacciones(safeId, transactions);
+        renderYearlyChartSelector(safeId, monthlyNetoPorAnio, cuentaNombre);
+    }
+
+    function renderMonthlyChart(safeId, monthlyData) {
+        const ctx = document.getElementById(`monthlyChart_${safeId}`)?.getContext('2d');
+        if (!ctx) return;
+        const monthsSorted = Object.keys(monthlyData).sort();
+        if (chartsInstances[`monthly_${safeId}`]) chartsInstances[`monthly_${safeId}`].destroy();
+        chartsInstances[`monthly_${safeId}`] = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: monthsSorted,
+                datasets: [
+                    { label: 'Ingresos', data: monthsSorted.map(m => monthlyData[m].ingresos), backgroundColor: '#3b82f6', borderRadius: 6 },
+                    { label: 'Gastos', data: monthsSorted.map(m => monthlyData[m].gastos), backgroundColor: '#ef4444', borderRadius: 6 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
+    }
+
+    function renderCategoryChart(safeId, categoryMap) {
+        const ctx = document.getElementById(`categoryChart_${safeId}`)?.getContext('2d');
+        if (!ctx) return;
+        let catList = Array.from(categoryMap.entries()).map(([name, val]) => ({ name, neto: val.ingresos - val.gastos, abs: Math.abs(val.ingresos - val.gastos) }));
+        catList.sort((a,b)=>b.abs - a.abs);
+        const top5 = catList.slice(0,5);
+        if (chartsInstances[`category_${safeId}`]) chartsInstances[`category_${safeId}`].destroy();
+        chartsInstances[`category_${safeId}`] = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: top5.map(c=>c.name), datasets: [{ label: 'Neto (MN)', data: top5.map(c=>c.neto), backgroundColor: '#8b5cf6', borderRadius:8 }] },
+            options: { responsive: true }
+        });
+    }
+
+    function renderCategoryTable(safeId, categoryMap) {
+        const tbody = document.getElementById(`categoryTable_${safeId}`);
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        const sorted = Array.from(categoryMap.keys()).sort();
+        for(let cat of sorted) {
+            const data = categoryMap.get(cat);
+            const neto = data.ingresos - data.gastos;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = cat;
+            row.insertCell(1).innerText = data.ingresos.toLocaleString('es-AR');
+            row.insertCell(2).innerText = data.gastos.toLocaleString('es-AR');
+            row.insertCell(3).innerHTML = neto>=0 ? `<span class="positive">+${neto.toLocaleString('es-AR')}</span>` : `<span class="negative">${neto.toLocaleString('es-AR')}</span>`;
+            row.insertCell(4).innerText = data.count;
+        }
+    }
+
+    function renderUltimasTransacciones(safeId, transactions) {
+        const tbody = document.getElementById(`ultimasTable_${safeId}`);
+        if(!tbody) return;
+        const ultimas = [...transactions].sort((a,b)=>(b.fechaObj||0)-(a.fechaObj||0)).slice(0,10);
+        tbody.innerHTML = '';
+        for(const tx of ultimas) {
+            const row = tbody.insertRow();
+            let fechaStr = tx.fechaObj && !isNaN(tx.fechaObj) ? tx.fechaObj.toLocaleDateString('es-ES') : (tx.fechaRaw||'Sin fecha');
+            row.insertCell(0).innerText = fechaStr;
+            row.insertCell(1).innerText = tx.categoria;
+            row.insertCell(2).innerHTML = tx.ingresos>0 ? `<span class="ingreso-cell">+${tx.ingresos.toLocaleString('es-AR')}</span>` : '-';
+            row.insertCell(3).innerHTML = tx.gastos>0 ? `<span class="gasto-cell">-${tx.gastos.toLocaleString('es-AR')}</span>` : '-';
+        }
+    }
+
+    function renderYearlyChartSelector(safeId, monthlyNetoPorAnio, cuentaNombre) {
+        const years = Object.keys(monthlyNetoPorAnio).sort();
+        if (years.length === 0) return;
+
+        const container = document.getElementById(`yearSelector_${safeId}`);
+        if (!container) return;
+
+        const storageKey = `selectedYears_${cuentaNombre}`;
+        let selectedYears = [];
+        try { const saved = localStorage.getItem(storageKey); if(saved) selectedYears = JSON.parse(saved); } catch(e) {}
+        if (!selectedYears.length && years.length >= 2) selectedYears = [years[years.length-2], years[years.length-1]];
+        else if (!selectedYears.length && years.length === 1) selectedYears = [years[0]];
+
+        container.innerHTML = '<span style="font-weight: 600;">📊 Comparar años:</span>';
+        years.forEach(year => {
+            const isChecked = selectedYears.includes(year);
+            const div = document.createElement('div');
+            div.className = 'year-checkbox';
+            div.innerHTML = `<input type="checkbox" value="${year}" ${isChecked ? 'checked' : ''}><span>${year}</span>`;
+            div.querySelector('input').addEventListener('change', () => {
+                const selected = Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
+                localStorage.setItem(storageKey, JSON.stringify(selected));
+                actualizarGraficoConPrediccion();
+            });
+            container.appendChild(div);
+        });
+        const selectAllBtn = document.createElement('button');
+        selectAllBtn.innerText = '✓ Todos';
+        selectAllBtn.className = 'reset-btn';
+        selectAllBtn.style.fontSize = '0.7rem';
+        selectAllBtn.onclick = () => { container.querySelectorAll('input').forEach(cb => cb.checked = true); localStorage.setItem(storageKey, JSON.stringify([...years])); actualizarGraficoConPrediccion(); };
+        container.appendChild(selectAllBtn);
+        const clearAllBtn = document.createElement('button');
+        clearAllBtn.innerText = '✗ Ninguno';
+        clearAllBtn.className = 'reset-btn';
+        clearAllBtn.style.fontSize = '0.7rem';
+        clearAllBtn.onclick = () => { container.querySelectorAll('input').forEach(cb => cb.checked = false); localStorage.setItem(storageKey, JSON.stringify([])); actualizarGraficoConPrediccion(); };
+        container.appendChild(clearAllBtn);
+
+        const actualizarGraficoConPrediccion = () => {
+            const selected = Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
+            const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+            const datasets = [];
+            const colores = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#84cc16'];
+
+            selected.forEach((year, idx) => {
+                const data = [];
+                for (let i=1;i<=12;i++) {
+                    const month = String(i).padStart(2,'0');
+                    data.push(monthlyNetoPorAnio[year]?.[month] || 0);
+                }
+                datasets.push({
+                    label: `${year} - Neto Real`,
+                    data: data,
+                    borderColor: colores[idx % colores.length],
+                    backgroundColor: 'transparent',
+                    borderWidth: 2.5,
+                    tension: 0.2,
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: colores[idx % colores.length],
+                });
+            });
+
+            // 🔮 PREDICCIÓN con tasa de crecimiento real
+            const prediccionObj = calcularPrediccionConTasaCrecimiento(monthlyNetoPorAnio);
+            if (prediccionObj && prediccionObj.prediccion) {
+                const { currentYear, prediccion, tasaCrecimiento } = prediccionObj;
+                const dataPrediccion = [];
+                const dataRealActual = [];
+
+                for (let i=1;i<=12;i++) {
+                    const month = String(i).padStart(2,'0');
+                    const realVal = monthlyNetoPorAnio[currentYear]?.[month] || 0;
+                    dataRealActual.push(realVal);
+                    const predVal = prediccion[month];
+                    if (predVal !== null && realVal === 0) {
+                        dataPrediccion.push(predVal);
+                    } else {
+                        dataPrediccion.push(null);
+                    }
+                }
+
+                // Dataset de predicción
+                const tasaFormateada = (tasaCrecimiento * 100).toFixed(1);
+                const signoTasa = tasaCrecimiento >= 0 ? '+' : '';
+                datasets.push({
+                    label: `${currentYear} - Predicción (tasa ${signoTasa}${tasaFormateada}%)`,
+                    data: dataPrediccion,
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2.5,
+                    borderDash: [8, 6],
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#f59e0b',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    spanGaps: false,
+                });
+
+                // También mostramos la línea real del año actual si no está seleccionada
+                if (!selected.includes(String(currentYear))) {
+                    datasets.push({
+                        label: `${currentYear} - Datos reales`,
+                        data: dataRealActual,
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'transparent',
+                        borderWidth: 1.8,
+                        borderDash: [2, 4],
+                        tension: 0.2,
+                        fill: false,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#94a3b8',
+                    });
+                }
+            }
+
+            const chartId = `yearlyChart_${safeId}`;
+            const ctx = document.getElementById(chartId)?.getContext('2d');
+            if (!ctx) return;
+            if (yearlyChartsInstances[safeId]) yearlyChartsInstances[safeId].destroy();
+            yearlyChartsInstances[safeId] = new Chart(ctx, {
+                type: 'line',
+                data: { labels: meses, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    if (ctx.raw === null) return null;
+                                    let label = `${ctx.dataset.label}: ${ctx.raw.toLocaleString('es-AR')} MN`;
+                                    if (ctx.dataset.label.includes('Predicción')) {
+                                        label += ' ⚡ (estimado)';
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { title: { display: true, text: 'Neto (MN)' }, ticks: { callback: (val) => val.toLocaleString('es-AR') } }
+                    }
+                }
+            });
+        };
+        actualizarGraficoConPrediccion();
+    }
+
+    function renderResumenGeneral() {
+        const cuentasOrdenadas = Array.from(cuentasMap.entries())
+            .map(([cuenta, transacciones]) => ({ cuenta, count: transacciones.length, transacciones }))
+            .sort((a,b)=>b.count - a.count);
+        let totalGeneralIngresos = 0, totalGeneralGastos = 0;
+        const cuentasResumen = cuentasOrdenadas.map(({ cuenta, transacciones }) => {
+            const stats = calcularEstadisticasCuenta(transacciones);
+            totalGeneralIngresos += stats.ingresos;
+            totalGeneralGastos += stats.gastos;
+            return { cuenta, ...stats };
+        });
+        const cashGeneral = totalGeneralIngresos - totalGeneralGastos;
+        let html = `<div class="resumen-card"><h3>📊 RESUMEN GENERAL DE TODAS LAS CUENTAS</h3><div class="resumen-stats">
+            <div class="resumen-stat"><div class="value">💰 ${totalGeneralIngresos.toLocaleString('es-AR')}</div><div>Ingresos Totales</div></div>
+            <div class="resumen-stat"><div class="value">💸 ${totalGeneralGastos.toLocaleString('es-AR')}</div><div>Gastos Totales</div></div>
+            <div class="resumen-stat"><div class="value">💵 ${cashGeneral.toLocaleString('es-AR')}</div><div>Cash Total</div></div>
+            <div class="resumen-stat"><div class="value">📊 ${filteredTransactions.length}</div><div>Total Transacciones</div></div>
+        </div></div>
+        <div class="table-section"><h3>📋 Resumen por Cuenta</h3><table><thead><tr><th>Cuenta</th><th>Ingresos</th><th>Gastos</th><th>Neto</th><th>Transacciones</th><th>Margen</th></tr></thead><tbody>`;
+        for (const item of cuentasResumen) {
+            const neto = item.ingresos - item.gastos;
+            const margen = item.ingresos > 0 ? ((neto / item.ingresos) * 100).toFixed(1) : 0;
+            html += `<tr><td><strong>${item.cuenta}</strong></td><td>${item.ingresos.toLocaleString('es-AR')}</td><td>${item.gastos.toLocaleString('es-AR')}</td><td class="${neto>=0?'positive':'negative'}">${neto>=0?'+':''}${neto.toLocaleString('es-AR')}</td><td>${item.transactionsCount}</td><td>${margen}%</td></tr>`;
+        }
+        html += `</tbody>}</div><div class="full-width-chart"><h3>📊 Comparativa de Ingresos, Gastos y Neto por Cuenta</h3><canvas id="resumenChart"></canvas></div>`;
+        tabsContent.innerHTML = html;
+        const ctx = document.getElementById('resumenChart')?.getContext('2d');
+        if(ctx) {
+            if(chartsInstances['resumen']) chartsInstances['resumen'].destroy();
+            chartsInstances['resumen'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: cuentasResumen.map(c=>c.cuenta),
+                    datasets: [
+                        { label: 'Ingresos', data: cuentasResumen.map(c=>c.ingresos), backgroundColor: '#3b82f6', borderRadius:6 },
+                        { label: 'Gastos', data: cuentasResumen.map(c=>c.gastos), backgroundColor: '#ef4444', borderRadius:6 },
+                        { label: 'Neto', data: cuentasResumen.map(c=>c.ingresos - c.gastos), backgroundColor: '#f59e0b', borderRadius:6, type:'line' }
+                    ]
+                },
+                options: { responsive: true }
+            });
+        }
+    }
+
+    function renderTabs() {
+        if (cuentasMap.size === 0) { mostrarEmptyState(); return; }
+        const cuentasOrdenadas = Array.from(cuentasMap.entries()).map(([cuenta, transacciones]) => ({ cuenta, count: transacciones.length })).sort((a,b)=>b.count - a.count).map(item=>item.cuenta);
+        tabsContainer.innerHTML = '';
+        const resumenBtn = document.createElement('button');
+        resumenBtn.className = `tab-btn ${activeTab === '__RESUMEN__' ? 'active' : ''}`;
+        resumenBtn.innerText = '📊 RESUMEN GENERAL';
+        resumenBtn.onclick = () => { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); resumenBtn.classList.add('active'); activeTab = '__RESUMEN__'; renderResumenGeneral(); };
+        tabsContainer.appendChild(resumenBtn);
+        cuentasOrdenadas.forEach(cuenta => {
+            const count = cuentasMap.get(cuenta).length;
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${activeTab === cuenta ? 'active' : ''}`;
+            btn.innerText = `${cuenta} (${count})`;
+            btn.onclick = () => { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); activeTab = cuenta; renderCuentaDashboard(cuenta); };
+            tabsContainer.appendChild(btn);
+        });
+        if (activeTab === '__RESUMEN__') renderResumenGeneral();
+        else if (activeTab && cuentasMap.has(activeTab)) renderCuentaDashboard(activeTab);
+        else { activeTab = '__RESUMEN__'; resumenBtn.classList.add('active'); renderResumenGeneral(); }
+    }
+
+    function procesarExcelYEscribir(rowsData) {
+        let headerIndex = -1;
+        for (let i=0; i<Math.min(50, rowsData.length); i++) {
+            const row = rowsData[i];
+            if(row && row[0] && String(row[0]).toLowerCase() === 'fecha' && row[1] && String(row[1]).toLowerCase() === 'cuentas') { headerIndex=i; break; }
+        }
+        if (headerIndex === -1) headerIndex = 0;
+        const header = rowsData[headerIndex];
+        let idxFecha=-1, idxCuentas=-1, idxCategoria=-1, idxIngresos=-1, idxGastos=-1;
+        for(let c=0; c<header.length; c++) {
+            const val = header[c] ? String(header[c]).trim().toLowerCase() : '';
+            if(val === 'fecha') idxFecha=c;
+            else if(val === 'cuentas') idxCuentas=c;
+            else if(val === 'categoría') idxCategoria=c;
+            else if(val === 'ingresos') idxIngresos=c;
+            else if(val === 'gastos') idxGastos=c;
+        }
+        if(idxGastos === -1 && header.length>=2) idxGastos = header.length-1;
+        if(idxIngresos === -1 && header.length>=2) idxIngresos = header.length-2;
+        if(idxCategoria === -1 && header.length>=3) idxCategoria = 2;
+        if(idxFecha === -1) idxFecha=0;
+        if(idxCuentas === -1 && header.length>=2) idxCuentas=1;
+        const transacciones = [];
+        for(let i=headerIndex+1; i<rowsData.length; i++) {
+            const row = rowsData[i];
+            if(!row || row.length===0) continue;
+            let cuenta = (idxCuentas !== -1 && row[idxCuentas]) ? String(row[idxCuentas]).trim() : 'Sin cuenta';
+            if(cuenta === '' || cuenta === 'undefined') cuenta = 'Sin cuenta';
+            let fechaRaw = (idxFecha !== -1 && row[idxFecha]) ? row[idxFecha] : '';
+            let categoria = (idxCategoria !== -1 && row[idxCategoria]) ? String(row[idxCategoria]).trim() : 'Sin categoría';
+            if(categoria === '') categoria = 'Sin categoría';
+            let ingresosVal = (idxIngresos !== -1 && row[idxIngresos] !== undefined && row[idxIngresos] !== '') ? limpiarYParsearNumero(row[idxIngresos]) : 0;
+            let gastosVal = (idxGastos !== -1 && row[idxGastos] !== undefined && row[idxGastos] !== '') ? limpiarYParsearNumero(row[idxGastos]) : 0;
+            if(ingresosVal===0 && gastosVal===0 && (!fechaRaw || fechaRaw==='')) continue;
+            let fechaObj = parseFecha(fechaRaw);
+            transacciones.push({ fechaRaw, fechaObj, cuenta, categoria, ingresos: ingresosVal, gastos: gastosVal });
+        }
+        return transacciones;
+    }
+
+    function limpiarTodo() {
+        allTransactions = [];
+        filteredTransactions = [];
+        cuentasMap.clear();
+        activeTab = '__RESUMEN__';
+        fechaDesdeInput.value = '';
+        fechaHastaInput.value = '';
+        fileStatusSpan.innerHTML = '⏳ Sin datos cargados';
+        filterGroup.style.opacity = '0.5';
+        filterGroup.style.pointerEvents = 'none';
+        mostrarEmptyState();
+        for(let key in chartsInstances) if(chartsInstances[key]) chartsInstances[key].destroy();
+        for(let key in yearlyChartsInstances) if(yearlyChartsInstances[key]) yearlyChartsInstances[key].destroy();
+        chartsInstances = {};
+        yearlyChartsInstances = {};
+    }
+
+    function handleExcelUpload(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+            if(rows && rows.length) {
+                allTransactions = procesarExcelYEscribir(rows);
+                fileStatusSpan.innerHTML = `✅ Cargado: ${allTransactions.length} transacciones`;
+                filterGroup.style.opacity = '1';
+                filterGroup.style.pointerEvents = 'auto';
+                aplicarFiltroFechasGlobal();
+            } else { fileStatusSpan.innerHTML = '⚠️ No se pudieron leer los datos'; }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    fileInput.addEventListener('change', (e) => { if(e.target.files && e.target.files[0]) handleExcelUpload(e.target.files[0]); });
+    resetBtn.addEventListener('click', () => { limpiarTodo(); fileInput.value = ''; });
+    applyFilterBtn.addEventListener('click', () => aplicarFiltroFechasGlobal());
+    clearFilterBtn.addEventListener('click', () => { fechaDesdeInput.value = ''; fechaHastaInput.value = ''; aplicarFiltroFechasGlobal(); });
+    limpiarTodo();
+</script>
+</body>
+</html>
